@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "angular",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["start"],
+      "cwd": "angular",
+      "port": 4200
+    }
+  ]
+}

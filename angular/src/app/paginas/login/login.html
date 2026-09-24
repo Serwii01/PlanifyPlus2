@@ -1,0 +1,49 @@
+<app-acceso titulo="Iniciar sesión" subtitulo="Accede a tu cuenta de PlanifyPlus.">
+  <form class="pila" (ngSubmit)="iniciarSesion()" novalidate>
+    @if (errorGeneral()) {
+      <div class="banner-error" role="alert"><app-icono nombre="alerta" [tamano]="16" /> {{ errorGeneral() }}</div>
+    }
+
+    <div class="campo-grupo">
+      <label class="etiqueta" for="email">Correo electrónico</label>
+      <div class="campo-con-icono">
+        <app-icono nombre="correo" [tamano]="16" />
+        <input id="email" name="email" type="email" class="campo" [class.invalido]="errores()['email']" placeholder="tu@correo.com" autocomplete="email" [(ngModel)]="email" />
+      </div>
+      @if (errores()['email']; as error) {
+        <span class="error-campo">{{ error }}</span>
+      }
+    </div>
+
+    <div class="campo-grupo">
+      <label class="etiqueta" for="contrasena">Contraseña</label>
+      <div class="campo-con-icono">
+        <app-icono nombre="candado" [tamano]="16" />
+        <input
+          id="contrasena"
+          name="contrasena"
+          [type]="verContrasena() ? 'text' : 'password'"
+          class="campo"
+          [class.invalido]="errores()['contrasena']"
+          placeholder="Tu contraseña"
+          autocomplete="current-password"
+          [(ngModel)]="contrasena"
+        />
+        <button type="button" class="btn-ojo" (click)="verContrasena.set(!verContrasena())" [attr.aria-label]="verContrasena() ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+          <app-icono [nombre]="verContrasena() ? 'ojo-cerrado' : 'ojo'" [tamano]="16" />
+        </button>
+      </div>
+      @if (errores()['contrasena']; as error) {
+        <span class="error-campo">{{ error }}</span>
+      }
+    </div>
+
+    <button type="submit" class="btn btn-primario btn-grande btn-bloque" [disabled]="enviando()">
+      {{ enviando() ? 'Entrando…' : 'Entrar' }}
+    </button>
+
+    <p class="pie-formulario">
+      ¿No tienes cuenta? <a routerLink="/registro" class="enlace">Crea una gratis</a>
+    </p>
+  </form>
+</app-acceso>

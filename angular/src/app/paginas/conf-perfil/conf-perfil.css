@@ -1,0 +1,60 @@
+.pagina {
+  max-width: 620px;
+  padding-top: 28px;
+  padding-bottom: 60px;
+}
+
+.volver {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--tinta-2);
+}
+
+.volver:hover {
+  color: var(--tinta);
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 18px;
+  padding: 28px 32px;
+}
+
+h1 {
+  font-size: 26px;
+}
+
+.sub {
+  margin-top: 4px;
+  color: var(--tinta-2);
+}
+
+.acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+@media (max-width: 640px) {
+  .pagina {
+    padding-top: 16px;
+  }
+
+  .formulario {
+    padding: 20px;
+  }
+
+  .acciones {
+    flex-direction: column-reverse;
+  }
+
+  .acciones .btn {
+    width: 100%;
+  }
+}

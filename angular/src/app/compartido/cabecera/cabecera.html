@@ -1,0 +1,44 @@
+<header class="cabecera">
+  <div class="contenedor interior">
+    <a routerLink="/" class="marca" aria-label="PlanifyPlus, inicio">
+      <span class="logo"><app-icono nombre="calendario" [tamano]="18" /></span>
+      <span class="texto-marca">Planify<span>+</span></span>
+    </a>
+
+    <div class="hueco"><ng-content /></div>
+
+    <nav class="acciones">
+      @if (sesion.usuario(); as usuario) {
+        @if (usuario.es_admin) {
+          <span class="insignia-admin"><app-icono nombre="escudo" [tamano]="14" /> Admin</span>
+          <span class="usuario">
+            <app-avatar [nombre]="usuario.nombre" [url]="usuario.avatar_url" [tamano]="34" />
+            <span class="nombre">{{ usuario.nombre }}</span>
+          </span>
+        } @else {
+          <a routerLink="/social" class="btn btn-fantasma btn-icono" title="Tu red" aria-label="Tu red">
+            <app-icono nombre="usuarios" />
+          </a>
+          <a routerLink="/actividades/nueva" class="btn btn-primario crear">
+            <app-icono nombre="mas" [tamano]="16" /> <span>Crear actividad</span>
+          </a>
+          <a routerLink="/perfil" class="usuario enlace" title="Mi perfil">
+            <app-avatar [nombre]="usuario.nombre" [url]="usuario.avatar_url" [tamano]="34" />
+            <span class="datos">
+              <span class="nombre">{{ usuario.nombre }}</span>
+              @if (usuario.ciudad) {
+                <span class="ciudad">{{ usuario.ciudad }}</span>
+              }
+            </span>
+          </a>
+        }
+        <button type="button" class="btn btn-fantasma btn-icono" (click)="cerrarSesion()" title="Cerrar sesión" aria-label="Cerrar sesión">
+          <app-icono nombre="salir" />
+        </button>
+      } @else {
+        <a routerLink="/login" class="btn btn-fantasma">Iniciar sesión</a>
+        <a routerLink="/registro" class="btn btn-primario">Crear cuenta</a>
+      }
+    </nav>
+  </div>
+</header>

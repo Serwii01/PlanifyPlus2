@@ -1,0 +1,84 @@
+<app-acceso titulo="Crear cuenta" subtitulo="Únete a la comunidad de PlanifyPlus. Es gratis.">
+  <form class="pila" (ngSubmit)="registrarse()" novalidate>
+    @if (errorGeneral()) {
+      <div class="banner-error" role="alert"><app-icono nombre="alerta" [tamano]="16" /> {{ errorGeneral() }}</div>
+    }
+
+    <div class="campo-grupo">
+      <label class="etiqueta" for="nombre">Nombre</label>
+      <div class="campo-con-icono">
+        <app-icono nombre="usuario" [tamano]="16" />
+        <input id="nombre" name="nombre" type="text" class="campo" maxlength="100" [class.invalido]="errores()['nombre']" placeholder="Tu nombre completo" autocomplete="name" [(ngModel)]="nombre" />
+      </div>
+      @if (errores()['nombre']; as error) {
+        <span class="error-campo">{{ error }}</span>
+      }
+    </div>
+
+    <div class="campo-grupo">
+      <label class="etiqueta" for="email">Correo electrónico</label>
+      <div class="campo-con-icono">
+        <app-icono nombre="correo" [tamano]="16" />
+        <input id="email" name="email" type="email" class="campo" maxlength="255" [class.invalido]="errores()['email']" placeholder="tu@correo.com" autocomplete="email" [(ngModel)]="email" />
+      </div>
+      @if (errores()['email']; as error) {
+        <span class="error-campo">{{ error }}</span>
+      }
+    </div>
+
+    <div class="campo-grupo">
+      <label class="etiqueta" for="contrasena">Contraseña</label>
+      <div class="campo-con-icono">
+        <app-icono nombre="candado" [tamano]="16" />
+        <input
+          id="contrasena"
+          name="contrasena"
+          [type]="verContrasena() ? 'text' : 'password'"
+          class="campo"
+          [class.invalido]="errores()['contrasena']"
+          placeholder="Mínimo 6 caracteres"
+          autocomplete="new-password"
+          [(ngModel)]="contrasena"
+        />
+        <button type="button" class="btn-ojo" (click)="verContrasena.set(!verContrasena())" [attr.aria-label]="verContrasena() ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+          <app-icono [nombre]="verContrasena() ? 'ojo-cerrado' : 'ojo'" [tamano]="16" />
+        </button>
+      </div>
+      @if (errores()['contrasena']; as error) {
+        <span class="error-campo">{{ error }}</span>
+      }
+    </div>
+
+    <div class="campo-grupo">
+      <label class="etiqueta" for="ciudad">Ciudad <span class="ayuda">(opcional)</span></label>
+      <select id="ciudad" name="ciudad" class="campo" [class.invalido]="errores()['ciudad']" [(ngModel)]="ciudad">
+        <option value="">Elige tu ciudad</option>
+        @for (c of ciudades(); track c) {
+          <option [value]="c">{{ c }}</option>
+        }
+      </select>
+      <span class="ayuda">La usamos para mostrarte actividades cerca de ti.</span>
+    </div>
+
+    <div class="campo-grupo">
+      <label class="etiqueta" for="direccion">Dirección exacta <span class="ayuda">(opcional)</span></label>
+      <app-selector-ubicacion
+        id="direccion"
+        [(ubicacion)]="direccion"
+        [ciudad]="ciudad"
+        [alturaMapa]="160"
+        placeholder="Tu calle, barrio o un lugar de referencia"
+        [error]="errores()['direccion'] || errores()['latitud']"
+      />
+      <span class="ayuda">Con ella el filtro por distancia se calcula desde tu casa y no desde el centro de la ciudad.</span>
+    </div>
+
+    <button type="submit" class="btn btn-primario btn-grande btn-bloque" [disabled]="enviando()">
+      {{ enviando() ? 'Creando cuenta…' : 'Crear cuenta' }}
+    </button>
+
+    <p class="pie-formulario">
+      ¿Ya tienes cuenta? <a routerLink="/login" class="enlace">Inicia sesión</a>
+    </p>
+  </form>
+</app-acceso>

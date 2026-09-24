@@ -1,0 +1,669 @@
+/*
+ * Sistema visual de PlanifyPlus: tokens, controles y utilidades compartidas.
+ * Estilo "neumórfico" suave sobre un papel cálido: los paneles sobresalen (--relieve)
+ * y los campos se hunden (--hundido). Marca en índigo, tipos de actividad en tonos tierra
+ * y titulares en serif (Fraunces) para un aire de tablón de barrio, no de plantilla.
+ */
+:root {
+  --fondo: #f2efe8;
+  --superficie: #f2efe8;
+  --superficie-alta: #faf8f3;
+  --borde: #ddd8cc;
+  --borde-fuerte: #c4beaf;
+  --tinta: #1f1d1a;
+  --tinta-2: #57534a;
+  --tinta-3: #8a8375;
+
+  --marca: #4338ca;
+  --marca-oscura: #3730a3;
+  --marca-suave: #e5e3f6;
+  --marca-tinta: #3730a3;
+  --acento: #b45309;
+  --acento-suave: #f6e8d3;
+
+  /* Relieves del neumorfismo (sombras cálidas, discretas). */
+  --relieve: 5px 5px 12px rgba(74, 64, 44, 0.1), -5px -5px 12px rgba(255, 255, 255, 0.85);
+  --relieve-s: 3px 3px 7px rgba(74, 64, 44, 0.09), -3px -3px 7px rgba(255, 255, 255, 0.85);
+  --hundido: inset 2px 2px 5px rgba(74, 64, 44, 0.09), inset -2px -2px 5px rgba(255, 255, 255, 0.8);
+  --brillo-marca: 0 1px 2px rgba(31, 29, 26, 0.18);
+
+  --peligro: #b42318;
+  --peligro-suave: #f7dfdb;
+  --exito: #1f7a4d;
+  --exito-suave: #dcefe2;
+  --aviso: #a15c07;
+  --aviso-suave: #f6ebd2;
+
+  --deportiva: #1d6f6a;
+  --deportiva-suave: #d8e9e5;
+  --cultural: #b3512a;
+  --cultural-suave: #f5e1d6;
+  --taller: #5f6b1c;
+  --taller-suave: #e7ebcf;
+
+  --radio: 14px;
+  --radio-s: 10px;
+  --sombra: var(--relieve);
+  --sombra-flotante: 10px 10px 28px rgba(74, 64, 44, 0.18), -5px -5px 16px rgba(255, 255, 255, 0.8);
+  --fuente: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --fuente-titulos: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--fuente);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--tinta);
+  background: var(--fondo);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--fuente-titulos);
+  font-weight: 600;
+  font-variation-settings: 'opsz' 40;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+}
+
+/* Títulos pequeños en mayúsculas (secciones): vuelven a la sans. */
+.titulo-seccion {
+  font-family: var(--fuente);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tinta-3);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.contenedor {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.visualmente-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+/* ---------- Botones ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: var(--radio-s);
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-primario {
+  background: var(--marca);
+  color: #fff;
+  box-shadow: var(--brillo-marca);
+}
+
+.btn-primario:hover:not(:disabled) {
+  background: var(--marca-oscura);
+}
+
+.btn-secundario {
+  background: var(--superficie);
+  border-color: var(--borde);
+  box-shadow: var(--relieve-s);
+  color: var(--tinta);
+}
+
+.btn-secundario:hover:not(:disabled) {
+  color: var(--marca);
+}
+
+.btn-secundario:active:not(:disabled) {
+  box-shadow: var(--hundido);
+}
+
+.btn-fantasma {
+  background: transparent;
+  color: var(--tinta-2);
+}
+
+.btn-fantasma:hover:not(:disabled) {
+  background: rgba(31, 29, 26, 0.06);
+  color: var(--tinta);
+}
+
+.btn-suave {
+  background: var(--marca-suave);
+  color: var(--marca-tinta);
+}
+
+.btn-suave:hover:not(:disabled) {
+  background: #d9d6f0;
+}
+
+.btn-peligro {
+  background: var(--superficie);
+  box-shadow: var(--relieve-s);
+  color: var(--peligro);
+}
+
+.btn-peligro:hover:not(:disabled) {
+  background: var(--peligro-suave);
+}
+
+.btn-peligro-solido {
+  background: var(--peligro);
+  color: #fff;
+}
+
+.btn-grande {
+  height: 48px;
+  padding: 0 22px;
+  font-size: 15px;
+}
+
+.btn-pequeno {
+  height: 34px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.btn-bloque {
+  width: 100%;
+}
+
+.btn-icono {
+  width: 40px;
+  padding: 0;
+}
+
+/* ---------- Formularios ---------- */
+.campo-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.etiqueta {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--tinta-2);
+}
+
+.campo {
+  width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  background: var(--superficie);
+  border: 1px solid transparent;
+  border-radius: var(--radio-s);
+  box-shadow: var(--hundido);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+textarea.campo {
+  height: auto;
+  min-height: 110px;
+  padding: 12px 14px;
+  resize: vertical;
+}
+
+.campo::placeholder {
+  color: var(--tinta-3);
+}
+
+.campo:focus {
+  border-color: var(--marca);
+  box-shadow: var(--hundido), 0 0 0 3px rgba(67, 56, 202, 0.14);
+}
+
+.campo.invalido {
+  border-color: var(--peligro);
+}
+
+.campo.invalido:focus {
+  box-shadow: var(--hundido), 0 0 0 3px rgba(180, 35, 24, 0.14);
+}
+
+.campo:read-only:not(select) {
+  color: var(--tinta-2);
+}
+
+.campo-con-icono {
+  position: relative;
+}
+
+.campo-con-icono > app-icono {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  transform: translateY(-50%);
+  color: var(--tinta-3);
+  pointer-events: none;
+}
+
+.campo-con-icono > .campo {
+  padding-left: 42px;
+}
+
+.campo-con-icono > .btn-ojo {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: var(--tinta-3);
+}
+
+.campo-con-icono > .btn-ojo:hover {
+  color: var(--marca);
+}
+
+.pila {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.banner-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radio-s);
+  background: var(--peligro-suave);
+  color: #b42318;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.error-campo {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--peligro);
+}
+
+.ayuda {
+  font-size: 12px;
+  color: var(--tinta-3);
+}
+
+/* ---------- Chips y etiquetas ---------- */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.chip::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.chip.DEPORTIVA {
+  background: var(--deportiva-suave);
+  color: var(--deportiva);
+}
+
+.chip.CULTURAL {
+  background: var(--cultural-suave);
+  color: var(--cultural);
+}
+
+.chip.TALLER {
+  background: var(--taller-suave);
+  color: var(--taller);
+}
+
+.chip-neutra {
+  background: var(--superficie);
+  box-shadow: var(--hundido);
+  color: var(--tinta-2);
+}
+
+.chip-neutra::before,
+.chip-estado::before {
+  display: none;
+}
+
+.chip-estado.hoy {
+  background: var(--aviso-suave);
+  color: var(--aviso);
+}
+
+.chip-estado.pronto {
+  background: var(--marca-suave);
+  color: var(--marca-tinta);
+}
+
+.chip-estado.finalizada {
+  background: var(--borde);
+  color: var(--tinta-3);
+}
+
+/* Chip sobre una foto: fondo translúcido claro. */
+.chip-sobre-foto {
+  background: rgba(250, 248, 243, 0.94);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+/* ---------- Superficies ---------- */
+.panel {
+  background: var(--superficie);
+  border-radius: var(--radio);
+  box-shadow: var(--relieve);
+}
+
+/* Panel hundido: bloques secundarios dentro de otro panel. */
+.panel-hundido {
+  background: var(--superficie);
+  border-radius: var(--radio-s);
+  box-shadow: var(--hundido);
+}
+
+/* Avatares apilados (asistentes a una actividad). */
+.pila-avatares {
+  display: inline-flex;
+  align-items: center;
+}
+
+.pila-avatares > * {
+  margin-left: -8px;
+}
+
+.pila-avatares > :first-child {
+  margin-left: 0;
+}
+
+.pila-avatares .mas {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--marca-suave);
+  color: var(--marca-tinta);
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: 0 0 0 2px var(--superficie);
+}
+
+/* Estado vacío reutilizable en listados. */
+.vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--tinta-2);
+}
+
+.vacio app-icono {
+  color: var(--tinta-3);
+  margin-bottom: 6px;
+}
+
+.vacio strong {
+  font-size: 15px;
+  color: var(--tinta);
+}
+
+.vacio p {
+  font-size: 13px;
+  color: var(--tinta-3);
+}
+
+/* Esqueleto de carga. */
+.esqueleto {
+  height: 132px;
+  border-radius: var(--radio);
+  background: linear-gradient(90deg, #e7e3da 25%, #f0ede6 50%, #e7e3da 75%);
+  background-size: 200% 100%;
+  animation: brillo 1.4s infinite;
+}
+
+@keyframes brillo {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* ---------- Mapa (Leaflet dibuja fuera del componente) ---------- */
+.marcador-planify {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--marca);
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 6px rgba(67, 56, 202, 0.22), 0 4px 10px rgba(31, 29, 26, 0.3);
+}
+
+.popup-planify .leaflet-popup-content-wrapper {
+  border-radius: 10px;
+  box-shadow: var(--sombra);
+  font-family: var(--fuente);
+  font-size: 13px;
+  color: var(--tinta);
+}
+
+.popup-planify .leaflet-popup-content {
+  margin: 10px 14px;
+}
+
+.leaflet-container {
+  font-family: var(--fuente);
+}
+
+/* ---------- Enlaces y pies de formulario ---------- */
+.enlace {
+  color: var(--marca);
+  font-weight: 600;
+}
+
+.enlace:hover {
+  text-decoration: underline;
+}
+
+.pie-formulario {
+  text-align: center;
+  font-size: 13px;
+  color: var(--tinta-2);
+}
+
+/* Fechas largas ("jueves, 9 de abril"): solo se capitaliza la primera letra. */
+.fecha-larga {
+  display: block;
+}
+
+.fecha-larga::first-letter {
+  text-transform: uppercase;
+}
+
+/* ---------- Pestañas y segmentos (compartidos por perfil, social y perfil público) ---------- */
+.pestanas {
+  display: flex;
+  gap: 4px;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.pestanas::-webkit-scrollbar {
+  display: none;
+}
+
+.pestanas button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--tinta-3);
+  cursor: pointer;
+  transition: box-shadow 0.15s, color 0.15s;
+}
+
+.pestanas button:hover {
+  color: var(--tinta);
+}
+
+.pestanas button.activa {
+  box-shadow: var(--hundido);
+  color: var(--marca-tinta);
+}
+
+.pestanas .cuenta {
+  min-width: 20px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--marca-suave);
+  font-size: 11px;
+  text-align: center;
+  color: var(--marca-tinta);
+}
+
+.segmentos {
+  display: inline-flex;
+  gap: 2px;
+  max-width: 100%;
+  padding: 3px;
+  border-radius: 999px;
+  box-shadow: var(--hundido);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.segmentos::-webkit-scrollbar {
+  display: none;
+}
+
+.segmentos button {
+  flex-shrink: 0;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--tinta-2);
+  cursor: pointer;
+}
+
+.segmentos button.activo {
+  background: var(--superficie-alta);
+  box-shadow: var(--relieve-s);
+  color: var(--marca-tinta);
+}
+
+/* ---------- Responsive base ---------- */
+@media (max-width: 720px) {
+  .contenedor {
+    padding: 0 16px;
+  }
+
+  .btn-grande {
+    height: 46px;
+  }
+}
+
+/* Los mapas de Leaflet no deben provocar scroll horizontal. */
+.leaflet-container {
+  max-width: 100%;
+}
+
+/* Sin animaciones para quien lo pide en el sistema. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

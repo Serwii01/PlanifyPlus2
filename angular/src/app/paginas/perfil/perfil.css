@@ -1,0 +1,297 @@
+.pagina {
+  padding-top: 28px;
+  padding-bottom: 60px;
+}
+
+/* ---------- Resumen ---------- */
+.resumen {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 24px 32px;
+  padding: 24px 28px;
+}
+
+.identidad {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-width: 0;
+}
+
+.identidad > div {
+  min-width: 0;
+}
+
+h1 {
+  font-size: 26px;
+  overflow-wrap: anywhere;
+}
+
+.correo {
+  margin: 2px 0 8px;
+  font-size: 13px;
+  color: var(--tinta-2);
+  overflow-wrap: anywhere;
+}
+
+.bio {
+  margin: 0 0 8px;
+  max-width: 520px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--tinta-2);
+}
+
+.botones-perfil {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.cifras {
+  display: flex;
+  gap: 4px;
+  padding: 0 20px;
+  border-left: 1px solid var(--borde);
+  border-right: 1px solid var(--borde);
+}
+
+.cifra {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 78px;
+  padding: 6px 8px;
+  border-radius: var(--radio-s);
+  text-align: center;
+}
+
+.cifra strong {
+  font-family: var(--fuente-titulos);
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.cifra span {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--tinta-3);
+}
+
+.cifra-enlace strong {
+  color: var(--marca);
+}
+
+.cifra-enlace:hover {
+  box-shadow: var(--hundido);
+}
+
+/* ---------- Columnas ---------- */
+.columnas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 32px;
+  margin-top: 32px;
+}
+
+.encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  min-height: 34px;
+  margin-bottom: 16px;
+}
+
+h2 {
+  font-size: 20px;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ---------- Calendario ---------- */
+.lateral {
+  position: sticky;
+  top: 92px;
+  align-self: start;
+}
+
+.calendario {
+  padding: 18px;
+}
+
+.navegacion-mes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.nombre-mes {
+  font-family: var(--fuente-titulos);
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.rejilla {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.cabecera-dia {
+  padding: 6px 0;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--tinta-3);
+}
+
+.dia {
+  aspect-ratio: 1;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--tinta-2);
+  cursor: default;
+}
+
+.dia.hoy {
+  box-shadow: inset 0 0 0 1.5px var(--borde-fuerte);
+  font-weight: 700;
+  color: var(--tinta);
+}
+
+.dia.con-actividad {
+  background: var(--marca-suave);
+  color: var(--marca-tinta);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.dia.con-actividad:hover {
+  background: #d9d6f0;
+}
+
+.dia.seleccionado {
+  background: var(--marca);
+  color: #fff;
+}
+
+.dia.seleccionado:hover {
+  background: var(--marca-oscura);
+}
+
+.leyenda {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--tinta-3);
+}
+
+.punto {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--marca-suave);
+  border: 1px solid #c9c5e6;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1100px) {
+  .resumen {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .cifras {
+    grid-column: 1 / -1;
+    order: 3;
+    justify-content: space-between;
+    padding: 16px 0 0;
+    border-left: none;
+    border-right: none;
+    border-top: 1px solid var(--borde);
+  }
+
+  .cifra {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 960px) {
+  .columnas {
+    grid-template-columns: 1fr;
+  }
+
+  .lateral {
+    position: static;
+  }
+
+  .calendario {
+    max-width: 380px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .pagina {
+    padding-top: 16px;
+  }
+
+  .resumen {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 20px;
+  }
+
+  .identidad {
+    align-items: flex-start;
+  }
+
+  h1 {
+    font-size: 22px;
+  }
+
+  .botones-perfil {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .cifras {
+    flex-wrap: wrap;
+    gap: 4px 0;
+  }
+
+  .cifra {
+    flex: 1 1 30%;
+  }
+
+  .cifra strong {
+    font-size: 22px;
+  }
+
+  .calendario {
+    max-width: none;
+  }
+}
+
+.encabezado .pestanas,
+.encabezado .segmentos {
+  min-width: 0;
+  flex: 0 1 auto;
+}

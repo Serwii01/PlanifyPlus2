@@ -1,0 +1,262 @@
+.buscador {
+  width: 100%;
+  max-width: 460px;
+}
+
+.buscador .campo {
+  height: 42px;
+  background: var(--fondo);
+  border-color: transparent;
+}
+
+.buscador .campo:focus {
+  background: var(--superficie);
+  border-color: var(--marca);
+}
+
+.principal {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 40px;
+  padding-top: 36px;
+  padding-bottom: 48px;
+}
+
+.encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+h1 {
+  font-size: 30px;
+}
+
+h2 {
+  font-size: 19px;
+}
+
+.sub {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--tinta-3);
+}
+
+.contador {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--marca-suave);
+  color: var(--marca-tinta);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ---------- Filtros ---------- */
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.tipos {
+  display: flex;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  gap: 6px;
+  padding: 4px;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+}
+
+.filtro-tipo {
+  flex-shrink: 0;
+  height: 32px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--tinta-2);
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.filtro-tipo:hover {
+  background: var(--fondo);
+}
+
+.filtro-tipo.activo {
+  background: var(--tinta);
+  color: #fff;
+}
+
+.filtro-tipo.DEPORTIVA.activo {
+  background: var(--deportiva);
+}
+
+.filtro-tipo.CULTURAL.activo {
+  background: var(--cultural);
+}
+
+.filtro-tipo.TALLER.activo {
+  background: var(--taller);
+}
+
+.distancia {
+  width: auto;
+  height: 40px;
+  padding-right: 32px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ---------- Listas ---------- */
+.lista {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+.lista .vacio,
+.lista .esqueleto {
+  grid-column: 1 / -1;
+}
+
+.lateral .lista {
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 720px) {
+  .lista {
+    grid-template-columns: 1fr;
+  }
+}
+
+.lateral {
+  position: sticky;
+  top: 92px;
+  align-self: start;
+}
+
+/* ---------- Pie ---------- */
+.pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 20px;
+  padding-bottom: 28px;
+  border-top: 1px solid var(--borde);
+  font-size: 13px;
+  color: var(--tinta-3);
+}
+
+.enlace-pie {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--tinta-2);
+  font-weight: 600;
+}
+
+.enlace-pie:hover {
+  color: var(--marca);
+}
+
+/* ---------- Aviso legal ---------- */
+.fondo-legal {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(31, 29, 26, 0.45);
+  backdrop-filter: blur(2px);
+}
+
+.legal {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 560px;
+  max-height: calc(100vh - 32px);
+  background: var(--superficie);
+  border-radius: 18px;
+  box-shadow: var(--sombra-flotante);
+}
+
+.legal-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 20px 12px 28px;
+}
+
+.legal-cabecera h2 {
+  font-size: 20px;
+}
+
+.legal-textos {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 28px 28px;
+  color: var(--tinta-2);
+}
+
+.legal-textos p,
+.legal-textos ul {
+  margin: 0 0 12px;
+}
+
+.legal-textos ul {
+  padding-left: 20px;
+}
+
+.legal-version {
+  font-size: 12px;
+  color: var(--tinta-3);
+}
+
+@media (max-width: 1000px) {
+  .principal {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .lateral {
+    position: static;
+  }
+}
+
+@media (max-width: 720px) {
+  .principal {
+    padding-top: 20px;
+  }
+
+  .filtros {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .distancia {
+    width: 100%;
+  }
+
+  .legal {
+    border-radius: 14px;
+  }
+}

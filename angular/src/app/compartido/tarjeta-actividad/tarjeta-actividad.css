@@ -1,0 +1,297 @@
+/*
+ * Tarjeta de actividad: una fila con el bloque de fecha a la izquierda, el contenido en el
+ * centro y, si la actividad tiene portada, una miniatura a la derecha. En móvil la foto pasa
+ * arriba a todo el ancho y la fecha se coloca sobre ella.
+ */
+.tarjeta {
+  position: relative;
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 16px;
+  padding: 18px;
+  cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.tarjeta.con-foto {
+  grid-template-columns: 64px minmax(0, 1fr) 132px;
+}
+
+.tarjeta:hover {
+  box-shadow: var(--sombra-flotante);
+  transform: translateY(-2px);
+}
+
+.tarjeta.finalizada {
+  opacity: 0.72;
+}
+
+/* ---------- Fecha ---------- */
+.fecha {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: start;
+  padding: 8px 4px 10px;
+  border-radius: var(--radio-s);
+  background: var(--superficie-alta);
+  border: 1px solid var(--borde);
+  line-height: 1;
+  text-align: center;
+}
+
+.dia {
+  font-family: var(--fuente-titulos);
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.mes {
+  margin-top: 2px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--cultural);
+}
+
+.hora {
+  margin-top: 8px;
+  padding-top: 6px;
+  width: 100%;
+  border-top: 1px solid var(--borde);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--tinta-2);
+}
+
+/* ---------- Foto ---------- */
+.foto {
+  grid-column: 3;
+  grid-row: 1;
+  width: 132px;
+  height: 132px;
+  border-radius: var(--radio-s);
+  object-fit: cover;
+  background: var(--borde);
+}
+
+/* ---------- Cuerpo ---------- */
+.cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.tipo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 11px;
+}
+
+.tipo::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: currentColor;
+}
+
+.tipo.DEPORTIVA {
+  color: var(--deportiva);
+}
+
+.tipo.CULTURAL {
+  color: var(--cultural);
+}
+
+.tipo.TALLER {
+  color: var(--taller);
+}
+
+.cuando {
+  color: var(--tinta-3);
+}
+
+.cuando.hoy {
+  color: var(--aviso);
+}
+
+.cuando.finalizada {
+  color: var(--tinta-3);
+}
+
+.denuncias {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 8px;
+  border-radius: 6px;
+  background: var(--peligro-suave);
+  color: var(--peligro);
+}
+
+h3 {
+  font-size: 19px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.lugar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font-size: 13px;
+  color: var(--tinta-2);
+}
+
+.lugar span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lugar em {
+  flex-shrink: 0;
+  margin-left: 4px;
+  font-style: normal;
+  font-weight: 600;
+  color: var(--marca-tinta);
+}
+
+.descripcion {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--tinta-2);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ---------- Pie ---------- */
+footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--borde);
+}
+
+.gente {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  min-width: 0;
+  font-size: 12px;
+  color: var(--tinta-2);
+}
+
+.plazas {
+  font-weight: 600;
+  color: var(--tinta);
+}
+
+.plazas.llena {
+  color: var(--aviso);
+}
+
+.organiza {
+  color: var(--tinta-3);
+}
+
+.botones {
+  display: flex;
+  flex-shrink: 0;
+  gap: 6px;
+}
+
+.inscrito .texto-cancelar {
+  display: none;
+}
+
+.inscrito:hover {
+  background: var(--peligro-suave);
+  color: var(--peligro);
+}
+
+.inscrito:hover .texto-inscrito {
+  display: none;
+}
+
+.inscrito:hover .texto-cancelar {
+  display: inline;
+}
+
+/* ---------- Móvil ---------- */
+@media (max-width: 640px) {
+  .tarjeta,
+  .tarjeta.con-foto {
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .tarjeta.con-foto .fecha {
+    grid-row: 2;
+  }
+
+  .tarjeta.con-foto .cuerpo {
+    grid-row: 2;
+  }
+
+  .foto {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    width: 100%;
+    height: 150px;
+  }
+
+  .dia {
+    font-size: 22px;
+  }
+
+  .hora {
+    margin-top: 6px;
+  }
+
+  h3 {
+    font-size: 17px;
+  }
+
+  .descripcion {
+    -webkit-line-clamp: 3;
+  }
+
+  footer {
+    flex-wrap: wrap;
+  }
+
+  .botones {
+    width: 100%;
+  }
+
+  .botones .btn:not(.btn-icono) {
+    flex: 1;
+  }
+}

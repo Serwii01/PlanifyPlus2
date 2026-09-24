@@ -1,0 +1,82 @@
+@let a = actividad();
+@let prox = proximidad();
+<article class="tarjeta panel" [class.finalizada]="prox.finalizada" [class.con-foto]="!!a.foto" (click)="abrir.emit(a)">
+  <div class="fecha" [attr.aria-label]="a.fecha_hora_inicio | date: 'fullDate'">
+    <span class="dia">{{ a.fecha_hora_inicio | date: 'd' }}</span>
+    <span class="mes">{{ a.fecha_hora_inicio | date: 'MMM' }}</span>
+    <span class="hora">{{ a.fecha_hora_inicio | date: 'HH:mm' }}</span>
+  </div>
+
+  @if (a.foto; as foto) {
+    <img class="foto" [src]="foto.url" [alt]="foto.titulo ?? a.titulo" loading="lazy" />
+  }
+
+  <div class="cuerpo">
+    <div class="meta">
+      <span class="tipo {{ a.tipo }}">{{ a.tipo | titlecase }}</span>
+      <span class="cuando {{ prox.clase }}">{{ prox.texto }}</span>
+      @if (esAdmin() && a.denuncias > 0) {
+        <span class="denuncias"><app-icono nombre="bandera" [tamano]="11" /> {{ a.denuncias }} {{ a.denuncias === 1 ? 'denuncia' : 'denuncias' }}</span>
+      }
+    </div>
+
+    <h3>{{ a.titulo }}</h3>
+
+    <p class="lugar">
+      <app-icono nombre="ubicacion" [tamano]="13" />
+      <span>{{ a.ciudad }}{{ a.ubicacion ? ' · ' + a.ubicacion : '' }}</span>
+      @if (distancia(); as distancia) {
+        <em title="Distancia desde tu ubicación">{{ distancia }}</em>
+      }
+    </p>
+
+    <p class="descripcion">{{ a.descripcion }}</p>
+
+    <footer (click)="$event.stopPropagation()">
+      <div class="gente">
+        @if (a.asistentes.length) {
+          <span class="pila-avatares">
+            @for (p of a.asistentes.slice(0, 3); track p.id) {
+              <app-avatar [nombre]="p.nombre" [url]="p.avatar_url" [tamano]="24" [title]="p.nombre" />
+            }
+          </span>
+        }
+        <span class="plazas" [class.llena]="completa()">
+          @if (prox.finalizada) {
+            {{ a.inscritos }} {{ a.inscritos === 1 ? 'persona fue' : 'personas fueron' }}
+          } @else if (completa()) {
+            Completa · {{ a.inscritos }}/{{ a.aforo }}
+          } @else {
+            {{ a.inscritos }}/{{ a.aforo }} · quedan {{ a.aforo - a.inscritos }}
+          }
+        </span>
+        <span class="organiza">{{ a.creador ? 'Organiza ' + a.creador : 'Plan de la comunidad' }}</span>
+      </div>
+
+      <div class="botones">
+        @if (esCreador()) {
+          <button type="button" class="btn btn-secundario btn-pequeno" (click)="editar.emit(a)">
+            <app-icono nombre="editar" [tamano]="14" /> Editar
+          </button>
+          <button type="button" class="btn btn-peligro btn-pequeno btn-icono" (click)="eliminar.emit(a)" aria-label="Eliminar">
+            <app-icono nombre="papelera" [tamano]="15" />
+          </button>
+        } @else if (esAdmin()) {
+          <button type="button" class="btn btn-peligro btn-pequeno" (click)="eliminar.emit(a)">
+            <app-icono nombre="papelera" [tamano]="14" /> Eliminar
+          </button>
+        } @else if (prox.finalizada) {
+          <!-- Sin acciones: la actividad ya ha pasado. -->
+        } @else if (!sesion.haySesion()) {
+          <button type="button" class="btn btn-suave btn-pequeno" (click)="irALogin()">Inicia sesión</button>
+        } @else if (a.inscrito) {
+          <button type="button" class="btn btn-suave btn-pequeno inscrito" (click)="inscribir.emit(a)" title="Cancelar inscripción">
+            <app-icono nombre="check" [tamano]="14" /> <span class="texto-inscrito">Inscrito</span><span class="texto-cancelar">Cancelar</span>
+          </button>
+        } @else {
+          <button type="button" class="btn btn-primario btn-pequeno" [disabled]="completa()" (click)="inscribir.emit(a)">Apuntarme</button>
+        }
+      </div>
+    </footer>
+  </div>
+</article>

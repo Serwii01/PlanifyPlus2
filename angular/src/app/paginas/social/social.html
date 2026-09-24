@@ -1,0 +1,101 @@
+<app-cabecera />
+
+<main class="contenedor pagina">
+  <header class="titulo-pagina">
+    <div>
+      <h1>Tu red</h1>
+      <p>Sigue a la gente con la que coincides en planes y entérate de a dónde va.</p>
+    </div>
+    <a routerLink="/perfil" class="btn btn-fantasma btn-pequeno"><app-icono nombre="usuario" [tamano]="14" /> Mi perfil</a>
+  </header>
+
+  <div class="columnas">
+    <section class="personas-seccion">
+      <div class="encabezado">
+        <div class="pestanas" role="tablist">
+          <button type="button" role="tab" [class.activa]="pestana() === 'siguiendo'" (click)="pestana.set('siguiendo')">
+            <app-icono nombre="usuario-check" [tamano]="15" /> Siguiendo <span class="cuenta">{{ siguiendo().length }}</span>
+          </button>
+          <button type="button" role="tab" [class.activa]="pestana() === 'seguidores'" (click)="pestana.set('seguidores')">
+            <app-icono nombre="usuarios" [tamano]="15" /> Seguidores <span class="cuenta">{{ seguidores().length }}</span>
+          </button>
+          <button type="button" role="tab" [class.activa]="pestana() === 'descubrir'" (click)="pestana.set('descubrir')">
+            <app-icono nombre="brujula" [tamano]="15" /> Descubrir <span class="cuenta">{{ sugerencias().length }}</span>
+          </button>
+        </div>
+        <label class="campo-con-icono buscador">
+          <app-icono nombre="buscar" [tamano]="16" />
+          <input type="search" class="campo" placeholder="Buscar por nombre o ciudad" [value]="busqueda()" (input)="busqueda.set($any($event.target).value)" />
+        </label>
+      </div>
+
+      @if (pestana() === 'descubrir') {
+        <p class="explicacion">Primero, quien comparte planes contigo; después, gente de tu ciudad.</p>
+      }
+
+      <div class="lista-personas">
+        @if (cargando()) {
+          <div class="esqueleto"></div>
+          <div class="esqueleto"></div>
+        } @else {
+          @for (persona of personas(); track persona.id) {
+            <app-tarjeta-persona [persona]="persona" (cambio)="actualizarPersona($event)" />
+          } @empty {
+            <div class="vacio panel">
+              <app-icono nombre="usuarios" [tamano]="36" />
+              @if (busqueda()) {
+                <strong>Sin resultados</strong>
+                <p>Nadie coincide con "{{ busqueda() }}" en esta lista.</p>
+              } @else if (pestana() === 'siguiendo') {
+                <strong>Todavía no sigues a nadie</strong>
+                <p>Echa un vistazo a la pestaña Descubrir para encontrar gente afín.</p>
+                <button type="button" class="btn btn-primario btn-pequeno" (click)="pestana.set('descubrir')">Descubrir personas</button>
+              } @else if (pestana() === 'seguidores') {
+                <strong>Aún no tienes seguidores</strong>
+                <p>Organiza planes y participa en la comunidad para que te conozcan.</p>
+              } @else {
+                <strong>No hay más gente que sugerir</strong>
+                <p>Ya sigues a todas las personas afines. ¡Apúntate a más planes para conocer gente nueva!</p>
+              }
+            </div>
+          }
+        }
+      </div>
+    </section>
+
+    <aside class="lateral">
+      <h2><app-icono nombre="calendario" [tamano]="15" /> Planes de tu gente</h2>
+      <div class="lista-planes">
+        @for (plan of planes(); track plan.id) {
+          <div class="plan">
+            @if (plan.seguidos_que_van?.length) {
+              <div class="quien-va">
+                <span class="pila-avatares">
+                  @for (p of plan.seguidos_que_van!.slice(0, 3); track p.id) {
+                    <app-avatar [nombre]="p.nombre" [url]="p.avatar_url" [tamano]="22" />
+                  }
+                </span>
+                <span class="nombres">
+                  @for (p of plan.seguidos_que_van!.slice(0, 2); track p.id; let ultimo = $last) {
+                    <a [routerLink]="['/usuarios', p.id]">{{ p.nombre }}</a>{{ ultimo ? '' : ', ' }}
+                  }
+                  @if (plan.seguidos_que_van!.length > 2) {
+                    y {{ plan.seguidos_que_van!.length - 2 }} más
+                  }
+                  {{ plan.seguidos_que_van!.length === 1 ? ' va' : ' van' }}
+                </span>
+              </div>
+            }
+            <app-tarjeta-actividad [actividad]="plan" [soloInscripcion]="true" (abrir)="abrir($event)" (inscribir)="alternarInscripcion($event)" />
+          </div>
+        } @empty {
+          <div class="vacio panel">
+            <app-icono nombre="calendario" [tamano]="32" />
+            <strong>Nada por aquí todavía</strong>
+            <p>Cuando alguien a quien sigas se apunte a un plan, lo verás en esta lista.</p>
+          </div>
+        }
+      </div>
+    </aside>
+  </div>
+</main>

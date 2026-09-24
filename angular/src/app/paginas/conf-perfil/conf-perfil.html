@@ -1,0 +1,97 @@
+<app-cabecera />
+
+<main class="contenedor pagina">
+  <a routerLink="/perfil" class="volver"><app-icono nombre="atras" [tamano]="16" /> Volver al perfil</a>
+
+  <form class="panel formulario" (ngSubmit)="guardar()" novalidate>
+    <div>
+      <h1>Configuración del perfil</h1>
+      <p class="sub">Actualiza tus datos. Tu ciudad o dirección se usa para el filtro por distancia.</p>
+    </div>
+
+    <div class="campo-grupo">
+      <span class="etiqueta">Foto de perfil</span>
+      <app-selector-foto [(foto)]="avatar" modo="privado" [error]="errores()['foto_id']" />
+    </div>
+
+    <div class="campo-grupo">
+      <label class="etiqueta" for="nombre">Nombre</label>
+      <input id="nombre" name="nombre" type="text" class="campo" maxlength="100" [class.invalido]="errores()['nombre']" autocomplete="name" [(ngModel)]="nombre" />
+      @if (errores()['nombre']; as error) {
+        <span class="error-campo">{{ error }}</span>
+      }
+    </div>
+
+    <div class="campo-grupo">
+      <label class="etiqueta" for="bio">Presentación <span class="ayuda">(pública, opcional)</span></label>
+      <textarea id="bio" name="bio" class="campo" [class.invalido]="errores()['bio']" maxlength="300" placeholder="Cuenta en dos líneas qué planes te gustan, para que la gente te conozca." [(ngModel)]="bio"></textarea>
+      @if (errores()['bio']; as error) {
+        <span class="error-campo">{{ error }}</span>
+      } @else {
+        <span class="ayuda">{{ bio.length }}/300 · Se muestra en tu perfil público.</span>
+      }
+    </div>
+
+    <div class="campo-grupo">
+      <label class="etiqueta" for="email">Correo electrónico</label>
+      <input id="email" name="email" type="email" class="campo" maxlength="255" [class.invalido]="errores()['email']" autocomplete="email" [(ngModel)]="email" />
+      @if (errores()['email']; as error) {
+        <span class="error-campo">{{ error }}</span>
+      }
+    </div>
+
+    <div class="campo-grupo">
+      <label class="etiqueta" for="contrasena">Nueva contraseña</label>
+      <div class="campo-con-icono">
+        <app-icono nombre="candado" [tamano]="16" />
+        <input
+          id="contrasena"
+          name="contrasena"
+          [type]="verContrasena() ? 'text' : 'password'"
+          class="campo"
+          [class.invalido]="errores()['contrasena']"
+          placeholder="Déjala vacía para no cambiarla"
+          autocomplete="new-password"
+          [(ngModel)]="contrasena"
+        />
+        <button type="button" class="btn-ojo" (click)="verContrasena.set(!verContrasena())" [attr.aria-label]="verContrasena() ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+          <app-icono [nombre]="verContrasena() ? 'ojo-cerrado' : 'ojo'" [tamano]="16" />
+        </button>
+      </div>
+      @if (errores()['contrasena']; as error) {
+        <span class="error-campo">{{ error }}</span>
+      }
+    </div>
+
+    <div class="campo-grupo">
+      <label class="etiqueta" for="ciudad">Ciudad</label>
+      <select id="ciudad" name="ciudad" class="campo" [class.invalido]="errores()['ciudad']" [(ngModel)]="ciudad">
+        <option value="">Elige tu ciudad</option>
+        @for (c of ciudades(); track c) {
+          <option [value]="c">{{ c }}</option>
+        }
+      </select>
+      @if (errores()['ciudad']; as error) {
+        <span class="error-campo">{{ error }}</span>
+      }
+    </div>
+
+    <div class="campo-grupo">
+      <label class="etiqueta" for="direccion">Dirección exacta <span class="ayuda">(opcional)</span></label>
+      <app-selector-ubicacion
+        id="direccion"
+        [(ubicacion)]="direccion"
+        [ciudad]="ciudad"
+        [alturaMapa]="200"
+        placeholder="Tu calle, barrio o un lugar de referencia"
+        [error]="errores()['direccion'] || errores()['latitud']"
+      />
+      <span class="ayuda">Si la indicas, las distancias se calculan desde aquí; si no, desde el centro de tu ciudad.</span>
+    </div>
+
+    <div class="acciones">
+      <a routerLink="/perfil" class="btn btn-secundario">Cancelar</a>
+      <button type="submit" class="btn btn-primario" [disabled]="enviando()">{{ enviando() ? 'Guardando…' : 'Guardar cambios' }}</button>
+    </div>
+  </form>
+</main>

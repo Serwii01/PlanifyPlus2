@@ -1,0 +1,104 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ---------- Buscador ---------- */
+.buscador {
+  position: relative;
+}
+
+.resultados {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  margin-top: 6px;
+  max-height: 300px;
+  overflow-y: auto;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-s);
+  box-shadow: var(--sombra-flotante);
+}
+
+.resultado {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--borde);
+  text-align: left;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.resultado:last-child {
+  border-bottom: none;
+}
+
+.resultado:hover {
+  background: var(--fondo);
+}
+
+.resultado app-icono {
+  margin-top: 2px;
+  color: var(--marca);
+}
+
+.resultado small {
+  display: block;
+  color: var(--tinta-3);
+}
+
+.estado {
+  padding: 14px;
+  text-align: center;
+  color: var(--tinta-3);
+}
+
+.estado.error {
+  color: var(--peligro);
+}
+
+/* ---------- Mapa de previsualización ---------- */
+.mapa-previa {
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-s);
+  overflow: hidden;
+}
+
+.mapa {
+  background: var(--fondo);
+}
+
+.sin-ubicacion .mapa {
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+
+.seleccionada {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--exito-suave);
+  color: #067647;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.seleccionada span {
+  flex: 1;
+}
+
+.pista {
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--tinta-3);
+  text-align: center;
+}

@@ -1,0 +1,105 @@
+<app-cabecera />
+
+<main class="contenedor pagina">
+  <a routerLink="/" class="volver"><app-icono nombre="atras" [tamano]="16" /> Volver al inicio</a>
+
+  <div class="encabezado">
+    <h1>{{ idEdicion() === null ? 'Nueva actividad' : 'Editar actividad' }}</h1>
+    <p>{{ idEdicion() === null ? 'Organiza un plan para tu comunidad. Quedarás apuntado automáticamente.' : 'Los cambios se verán al instante para las personas apuntadas.' }}</p>
+  </div>
+
+  <form class="formulario" (ngSubmit)="guardar()" novalidate>
+    <section class="panel bloque">
+      <h2>Lo básico</h2>
+
+      <div class="campo-grupo">
+        <label class="etiqueta" for="titulo">Título</label>
+        <input id="titulo" name="titulo" type="text" class="campo" [class.invalido]="errores()['titulo']" placeholder="Ej. Clase de yoga al aire libre" maxlength="150" [(ngModel)]="titulo" (input)="quitarError('titulo')" />
+        @if (errores()['titulo']; as error) {
+          <span class="error-campo">{{ error }}</span>
+        }
+      </div>
+
+      <div class="campo-grupo">
+        <label class="etiqueta" for="descripcion">Descripción</label>
+        <textarea id="descripcion" name="descripcion" class="campo" [class.invalido]="errores()['descripcion']" maxlength="2000" placeholder="Qué vais a hacer, qué hay que llevar, nivel recomendado…" [(ngModel)]="descripcion" (input)="quitarError('descripcion')"></textarea>
+        @if (errores()['descripcion']; as error) {
+          <span class="error-campo">{{ error }}</span>
+        }
+      </div>
+
+      <div class="campo-grupo">
+        <span class="etiqueta">Tipo de actividad</span>
+        <div class="opciones-tipo" role="radiogroup">
+          @for (t of tipos; track t) {
+            <label class="opcion-tipo {{ t }}" [class.activa]="tipo === t">
+              <input type="radio" name="tipo" [value]="t" [(ngModel)]="tipo" (change)="quitarError('tipo')" class="visualmente-oculto" />
+              <span class="chip {{ t }}">{{ etiquetasTipo[t] }}</span>
+            </label>
+          }
+        </div>
+        @if (errores()['tipo']; as error) {
+          <span class="error-campo">{{ error }}</span>
+        }
+      </div>
+
+      <div class="fila">
+        <div class="campo-grupo">
+          <label class="etiqueta" for="fecha">Fecha</label>
+          <input id="fecha" name="fecha" type="date" class="campo" [class.invalido]="errores()['fecha']" [(ngModel)]="fecha" (change)="quitarError('fecha')" />
+          @if (errores()['fecha']; as error) {
+            <span class="error-campo">{{ error }}</span>
+          }
+        </div>
+        <div class="campo-grupo">
+          <label class="etiqueta" for="hora">Hora de inicio</label>
+          <input id="hora" name="hora" type="time" class="campo" [class.invalido]="errores()['hora']" [(ngModel)]="hora" (change)="quitarError('hora')" />
+          @if (errores()['hora']; as error) {
+            <span class="error-campo">{{ error }}</span>
+          }
+        </div>
+        <div class="campo-grupo">
+          <label class="etiqueta" for="aforo">Plazas</label>
+          <input id="aforo" name="aforo" type="text" inputmode="numeric" class="campo" [class.invalido]="errores()['aforo']" placeholder="Ej. 20" [(ngModel)]="aforo" (input)="quitarError('aforo')" />
+          @if (errores()['aforo']; as error) {
+            <span class="error-campo">{{ error }}</span>
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="panel bloque">
+      <h2>Foto de portada</h2>
+      <div class="campo-grupo">
+        <app-selector-foto [(foto)]="foto" modo="banco" [sugerencia]="titulo" [error]="errores()['foto_id']" />
+        <span class="ayuda">Busca en el banco de fotos de la comunidad (fotos libres de derechos) o sube una tuya; quedará disponible para los demás.</span>
+      </div>
+    </section>
+
+    <section class="panel bloque">
+      <h2>Dónde</h2>
+
+      <div class="campo-grupo">
+        <label class="etiqueta" for="ciudad">Ciudad</label>
+        <input id="ciudad" name="ciudad" type="text" class="campo" [class.invalido]="errores()['ciudad']" placeholder="Ej. Sevilla" [(ngModel)]="ciudad" (input)="quitarError('ciudad')" />
+        @if (errores()['ciudad']; as error) {
+          <span class="error-campo">{{ error }}</span>
+        } @else {
+          <span class="ayuda">Afina las búsquedas de ubicación y sirve para el filtro por distancia.</span>
+        }
+      </div>
+
+      <div class="campo-grupo">
+        <label class="etiqueta" for="busqueda">Ubicación exacta</label>
+        <app-selector-ubicacion [(ubicacion)]="ubicacion" [ciudad]="ciudad" [error]="errores()['ubicacion']" (ubicacionChange)="quitarError('ubicacion')" />
+      </div>
+    </section>
+
+    <div class="acciones">
+      <a routerLink="/" class="btn btn-secundario btn-grande">Cancelar</a>
+      <button type="submit" class="btn btn-primario btn-grande" [disabled]="enviando()">
+        {{ enviando() ? 'Guardando…' : idEdicion() === null ? 'Publicar actividad' : 'Guardar cambios' }}
+      </button>
+    </div>
+  </form>
+</main>

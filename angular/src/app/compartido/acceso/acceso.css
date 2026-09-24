@@ -1,0 +1,121 @@
+.acceso {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  min-height: 100vh;
+}
+
+.lateral {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 40px 48px;
+  color: var(--fondo);
+  background: var(--tinta);
+}
+
+.marca {
+  font-family: var(--fuente-titulos);
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.marca span {
+  color: #a5b4fc;
+}
+
+.mensaje h2 {
+  max-width: 440px;
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.mensaje p {
+  max-width: 400px;
+  margin-top: 16px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(242, 239, 232, 0.78);
+}
+
+.puntos {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(242, 239, 232, 0.9);
+}
+
+.puntos li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.puntos app-icono {
+  padding: 6px;
+  border-radius: 8px;
+  background: rgba(242, 239, 232, 0.14);
+}
+
+.contenido {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 32px 40px;
+  background: var(--superficie);
+}
+
+.volver {
+  position: absolute;
+  top: 24px;
+  left: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--tinta-2);
+}
+
+.volver:hover {
+  color: var(--tinta);
+}
+
+.formulario {
+  width: 100%;
+  max-width: 400px;
+}
+
+h1 {
+  font-size: 30px;
+}
+
+.subtitulo {
+  margin: 6px 0 28px;
+  color: var(--tinta-2);
+}
+
+@media (max-width: 860px) {
+  .acceso {
+    grid-template-columns: 1fr;
+  }
+
+  .lateral {
+    display: none;
+  }
+
+  .contenido {
+    padding: 72px 16px 32px;
+  }
+
+  .volver {
+    left: 16px;
+  }
+}

@@ -1,32 +1,40 @@
-# 🌟 PlanifyPlus
+# PlanifyPlus
 
-**PlanifyPlus** es una aplicación de escritorio desarrollada en **JavaFX con Maven** que permite a los usuarios crear, descubrir e inscribirse en actividades de todo tipo: culturales, deportivas y talleres.  
-Forma parte del proyecto académico de la asignatura **Desarrollo de Interfaces**.
+Plataforma web para crear, descubrir e inscribirse en actividades de la comunidad (deportivas, culturales y talleres), con foto de portada de un banco de imágenes libres, perfiles públicos con avatar, lista de asistentes, ubicación en mapa, filtro por distancia, aforo, calendario personal, denuncias y panel de moderación para el administrador.
 
----
+Proyecto académico de la asignatura **Desarrollo de Interfaces** (DAM). Nació como aplicación de escritorio JavaFX y se ha migrado a una aplicación web.
 
-## 🚀 Características principales
+| Carpeta | Contenido |
+|---|---|
+| [`laravel/`](laravel/README.md) | API REST · Laravel 12, JWT, PostgreSQL |
+| [`angular/`](angular/README.md) | Frontend · Angular 21 (standalone, signals, sin zone.js), Leaflet |
 
-- 👤 **Autenticación de usuarios**: registro e inicio de sesión con validación.  
-- 🗓️ **Gestión de actividades**: creación, edición y eliminación de actividades con título, descripción, tipo, fecha y hora.  
-- 📍 **Ubicación con Google Maps**: buscador de ubicaciones mediante la API de Google Places.  
-- 🔔 **Inscripción y control de participación**: los usuarios registrados pueden inscribirse y ver sus actividades activas.  
-- 🕒 **Feed inteligente**: muestra las actividades ordenadas por fecha próxima y con contador regresivo (“faltan X días”).  
-- 👥 **Perfil de usuario**: actividades creadas e inscritas.  
-- 🎨 **Interfaz moderna**: construida con FXML, CSS y principios de accesibilidad.
+## Puesta en marcha
 
----
+Requisitos: PHP 8.2+ (con las extensiones `pdo_pgsql` y `sodium`), Composer, PostgreSQL (base de datos `planifyplus`) y Node 20+.
 
-## 🧩 Tecnologías utilizadas
+```bash
+# API en http://localhost:8000
+cd laravel
+composer install
+cp .env.example .env            # en Windows: copy .env.example .env
+php artisan key:generate
+php artisan jwt:secret
+php artisan migrate
+php artisan fotos:importar      # banco de fotos libres (Openverse); tarda unos minutos
+php artisan db:seed             # admin@planifyplus.com / admin123 + actividades de ejemplo con portada
+php artisan serve
+```
 
-| Categoría | Herramienta / Librería |
-|------------|------------------------|
-| Lenguaje | Java 21 |
-| Framework GUI | JavaFX |
-| Gestor de dependencias | Maven |
-| Base de datos | MySQL (JDBC / JPA) |
-| API externa | LeafLet |
-| Arquitectura | MVC (Modelo - Vista - Controlador) |
-| Diseño de interfaz | Scene Builder + CSS |
-| Control de versiones | Git / GitHub |
----------------------------------------
+```bash
+# Frontend en http://localhost:4200
+cd angular
+npm install
+npm start
+```
+
+Tests del backend: `cd laravel && php artisan test` (SQLite en memoria, no toca PostgreSQL).
+
+## Autores
+
+Sergio Fernández Morales, Iván Pastor López y Juan Carlos Moreno Moray.

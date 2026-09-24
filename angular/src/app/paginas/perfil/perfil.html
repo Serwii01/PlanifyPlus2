@@ -1,0 +1,135 @@
+<app-cabecera />
+
+<main class="contenedor pagina">
+  @if (sesion.usuario(); as usuario) {
+    <section class="panel resumen">
+      <div class="identidad">
+        <app-avatar [nombre]="usuario.nombre" [url]="usuario.avatar_url" [tamano]="72" />
+        <div>
+          <h1>{{ usuario.nombre }}</h1>
+          <p class="correo">{{ usuario.email }}</p>
+          @if (usuario.bio) {
+            <p class="bio">{{ usuario.bio }}</p>
+          }
+          @if (usuario.direccion || usuario.ciudad; as ubicacion) {
+            <span class="chip chip-neutra" [title]="usuario.direccion ? 'Dirección exacta' : 'Centro de la ciudad'"><app-icono nombre="ubicacion" [tamano]="12" /> {{ ubicacion }}</span>
+          }
+        </div>
+      </div>
+
+      <div class="cifras">
+        <div class="cifra"><strong>{{ proximas().length }}</strong><span>Próximas</span></div>
+        <div class="cifra"><strong>{{ creadas() }}</strong><span>Organizadas</span></div>
+        <div class="cifra"><strong>{{ pasadas().length }}</strong><span>Realizadas</span></div>
+        <a routerLink="/social" class="cifra cifra-enlace" title="Ver tu red"><strong>{{ red().seguidores }}</strong><span>Seguidores</span></a>
+        <a routerLink="/social" class="cifra cifra-enlace" title="Ver tu red"><strong>{{ red().seguidos }}</strong><span>Siguiendo</span></a>
+      </div>
+
+      <div class="botones-perfil">
+        <a [routerLink]="['/usuarios', usuario.id]" class="btn btn-fantasma btn-pequeno"><app-icono nombre="usuario" [tamano]="14" /> Ver como público</a>
+        <a routerLink="/perfil/editar" class="btn btn-secundario"><app-icono nombre="ajustes" [tamano]="16" /> Editar perfil</a>
+      </div>
+    </section>
+  }
+
+  <div class="columnas">
+    <section class="actividades">
+      <div class="encabezado">
+        @if (diaSeleccionado(); as dia) {
+          <h2><span class="fecha-larga">{{ dia | date: "EEEE d 'de' MMMM" }}</span></h2>
+          <button type="button" class="btn btn-fantasma btn-pequeno" (click)="diaSeleccionado.set(null)">
+            <app-icono nombre="cerrar" [tamano]="14" /> Ver todas
+          </button>
+        } @else {
+          <div class="pestanas" role="tablist">
+            <button type="button" role="tab" [class.activa]="vista() === 'proximas'" (click)="vista.set('proximas')">
+              <app-icono nombre="calendario" [tamano]="15" /> Próximas <span class="cuenta">{{ proximas().length }}</span>
+            </button>
+            <button type="button" role="tab" [class.activa]="vista() === 'historial'" (click)="vista.set('historial')">
+              <app-icono nombre="historial" [tamano]="15" /> Historial <span class="cuenta">{{ pasadas().length }}</span>
+            </button>
+          </div>
+          @if (vista() === 'historial' && pasadas().length) {
+            <div class="segmentos" role="tablist">
+              <button type="button" role="tab" [class.activo]="filtroHistorial() === 'todas'" (click)="filtroHistorial.set('todas')">Todo</button>
+              <button type="button" role="tab" [class.activo]="filtroHistorial() === 'organizadas'" (click)="filtroHistorial.set('organizadas')">Organicé ({{ historialOrganizadas() }})</button>
+              <button type="button" role="tab" [class.activo]="filtroHistorial() === 'asistidas'" (click)="filtroHistorial.set('asistidas')">Asistí ({{ pasadas().length - historialOrganizadas() }})</button>
+            </div>
+          }
+        }
+      </div>
+
+      <div class="lista">
+        @if (cargando()) {
+          <div class="esqueleto"></div>
+          <div class="esqueleto"></div>
+        } @else {
+          @for (actividad of listado(); track actividad.id) {
+            <app-tarjeta-actividad
+              [actividad]="actividad"
+              [soloInscripcion]="true"
+              (abrir)="abrir($event)"
+              (inscribir)="alternarInscripcion($event)"
+            />
+          } @empty {
+            <div class="vacio panel">
+              <app-icono [nombre]="vista() === 'historial' && !diaSeleccionado() ? 'historial' : 'calendario'" [tamano]="36" />
+              @if (diaSeleccionado()) {
+                <strong>Nada apuntado ese día</strong>
+                <p>Elige otro día marcado en el calendario.</p>
+              } @else if (vista() === 'historial') {
+                <strong>{{ pasadas().length ? 'Nada en este apartado' : 'Tu historial está vacío' }}</strong>
+                <p>{{ pasadas().length ? 'Prueba con otro filtro.' : 'Cuando un plan al que vayas se celebre, quedará guardado aquí.' }}</p>
+              } @else {
+                <strong>Aún no tienes planes</strong>
+                <p>Apúntate a alguna actividad de la comunidad y aparecerá aquí.</p>
+                <a routerLink="/" class="btn btn-primario btn-pequeno">Explorar actividades</a>
+              }
+            </div>
+          }
+        }
+      </div>
+    </section>
+
+    <aside class="lateral">
+      <div class="panel calendario">
+        <div class="navegacion-mes">
+          <button type="button" class="btn btn-fantasma btn-icono btn-pequeno" (click)="cambiarMes(-1)" aria-label="Mes anterior">
+            <app-icono nombre="izquierda" [tamano]="16" />
+          </button>
+          <span class="nombre-mes">{{ mes() | date: 'LLLL y' | titlecase }}</span>
+          <button type="button" class="btn btn-fantasma btn-icono btn-pequeno" (click)="cambiarMes(1)" aria-label="Mes siguiente">
+            <app-icono nombre="derecha" [tamano]="16" />
+          </button>
+        </div>
+
+        <div class="rejilla">
+          @for (dia of diasSemana; track $index) {
+            <span class="cabecera-dia">{{ dia }}</span>
+          }
+          @for (celda of celdas(); track $index) {
+            @if (celda === null) {
+              <span></span>
+            } @else {
+              @let cuantas = actividadesPorDia().get(celda) ?? 0;
+              <button
+                type="button"
+                class="dia"
+                [class.hoy]="celda === hoy"
+                [class.con-actividad]="cuantas > 0"
+                [class.seleccionado]="celda === diaSeleccionado()"
+                [disabled]="cuantas === 0"
+                [title]="cuantas ? cuantas + (cuantas === 1 ? ' actividad' : ' actividades') : ''"
+                (click)="seleccionarDia(celda)"
+              >
+                {{ +celda.slice(8) }}
+              </button>
+            }
+          }
+        </div>
+
+        <p class="leyenda"><span class="punto"></span> Días con actividades · pulsa uno para filtrar</p>
+      </div>
+    </aside>
+  </div>
+</main>

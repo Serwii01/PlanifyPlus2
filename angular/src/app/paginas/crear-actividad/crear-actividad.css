@@ -1,0 +1,124 @@
+.pagina {
+  max-width: 820px;
+  padding-top: 28px;
+  padding-bottom: 60px;
+}
+
+.volver {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--tinta-2);
+}
+
+.volver:hover {
+  color: var(--tinta);
+}
+
+.encabezado {
+  margin: 18px 0 24px;
+}
+
+h1 {
+  font-size: 30px;
+}
+
+.encabezado p {
+  margin-top: 6px;
+  color: var(--tinta-2);
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.bloque {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 26px 28px;
+}
+
+h2 {
+  font-family: var(--fuente);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--tinta-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.fila {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+/* ---------- Tipo ---------- */
+.opciones-tipo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.opcion-tipo {
+  padding: 4px;
+  border: 1.5px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.opcion-tipo:hover {
+  border-color: var(--borde-fuerte);
+}
+
+.opcion-tipo.activa.DEPORTIVA {
+  border-color: var(--deportiva);
+}
+
+.opcion-tipo.activa.CULTURAL {
+  border-color: var(--cultural);
+}
+
+.opcion-tipo.activa.TALLER {
+  border-color: var(--taller);
+}
+
+.opcion-tipo .chip {
+  height: 30px;
+  padding: 0 14px;
+  font-size: 13px;
+}
+
+.acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .pagina {
+    padding-top: 16px;
+  }
+
+  .fila {
+    grid-template-columns: 1fr;
+  }
+
+  .bloque {
+    padding: 20px;
+  }
+
+  .acciones {
+    flex-direction: column-reverse;
+  }
+
+  .acciones .btn {
+    width: 100%;
+  }
+}

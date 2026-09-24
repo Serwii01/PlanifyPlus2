@@ -1,0 +1,33 @@
+@let p = persona();
+<article class="persona panel">
+  <a [routerLink]="['/usuarios', p.id]" class="cabecera-persona" title="Ver perfil">
+    <app-avatar [nombre]="p.nombre" [url]="p.avatar_url" [tamano]="52" />
+    <div class="quien">
+      <strong>{{ p.nombre }}</strong>
+      <div class="chips">
+        @if (p.ciudad) {
+          <span class="chip chip-neutra"><app-icono nombre="ubicacion" [tamano]="11" /> {{ p.ciudad }}</span>
+        }
+        @if (p.me_sigue && p.id !== sesion.usuario()?.id) {
+          <span class="chip chip-neutra te-sigue">Te sigue</span>
+        }
+      </div>
+    </div>
+  </a>
+
+  <p class="bio">{{ p.bio || 'Todavía no ha escrito su presentación.' }}</p>
+
+  <footer>
+    <span class="cifras">
+      <span><strong>{{ p.seguidores }}</strong> seguidores</span>
+      <span><strong>{{ p.seguidos }}</strong> siguiendo</span>
+      @if (p.planes_en_comun) {
+        <span class="en-comun" title="Planes en los que coincidís">
+          <app-icono nombre="calendario" [tamano]="12" />
+          {{ p.planes_en_comun }} en común
+        </span>
+      }
+    </span>
+    <app-boton-seguir [usuarioId]="p.id" [loSigo]="p.lo_sigo" (cambio)="cambio.emit($event)" />
+  </footer>
+</article>

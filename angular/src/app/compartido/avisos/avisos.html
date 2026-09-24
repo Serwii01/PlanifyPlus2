@@ -1,0 +1,35 @@
+<div class="toasts" aria-live="polite">
+  @for (toast of avisos.toasts(); track toast.id) {
+    <div class="toast {{ toast.tipo }}" role="status">
+      <app-icono [nombre]="icono(toast.tipo)" />
+      <span>{{ toast.texto }}</span>
+      <button type="button" class="cerrar" (click)="avisos.cerrarToast(toast.id)" aria-label="Cerrar aviso">
+        <app-icono nombre="cerrar" [tamano]="14" />
+      </button>
+    </div>
+  }
+</div>
+
+@if (avisos.confirmacion(); as confirmacion) {
+  <div class="fondo" (click)="avisos.responder(false)">
+    <div class="dialogo" role="dialog" [attr.aria-label]="confirmacion.titulo" (click)="$event.stopPropagation()">
+      <div class="icono-dialogo" [class.peligro]="confirmacion.peligrosa">
+        <app-icono [nombre]="confirmacion.peligrosa ? 'papelera' : 'info'" [tamano]="22" />
+      </div>
+      <h2>{{ confirmacion.titulo }}</h2>
+      <p>{{ confirmacion.mensaje }}</p>
+      <div class="botones">
+        <button type="button" class="btn btn-secundario" (click)="avisos.responder(false)">Cancelar</button>
+        <button
+          type="button"
+          class="btn"
+          [class.btn-peligro-solido]="confirmacion.peligrosa"
+          [class.btn-primario]="!confirmacion.peligrosa"
+          (click)="avisos.responder(true)"
+        >
+          {{ confirmacion.textoAceptar }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

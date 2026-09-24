@@ -1,0 +1,164 @@
+.pagina {
+  padding-top: 28px;
+  padding-bottom: 60px;
+}
+
+.titulo-pagina {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+h1 {
+  font-size: 30px;
+}
+
+.titulo-pagina p {
+  margin-top: 4px;
+  font-size: 14px;
+  color: var(--tinta-2);
+}
+
+.columnas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 32px;
+}
+
+/* ---------- Personas ---------- */
+.encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  min-width: 0;
+  margin-bottom: 14px;
+}
+
+.personas-seccion {
+  min-width: 0;
+}
+
+.buscador {
+  width: 260px;
+}
+
+.buscador .campo {
+  height: 40px;
+  border-radius: 999px;
+  font-size: 13px;
+}
+
+.explicacion {
+  margin: -4px 0 14px;
+  font-size: 13px;
+  color: var(--tinta-3);
+}
+
+.lista-personas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.lista-personas .vacio,
+.lista-personas .esqueleto {
+  grid-column: 1 / -1;
+}
+
+/* ---------- Planes de tu gente ---------- */
+.lateral {
+  align-self: start;
+}
+
+h2 {
+  font-family: var(--fuente);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tinta-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.lista-planes {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.plan {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.quien-va {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 6px;
+  font-size: 12px;
+  color: var(--tinta-2);
+}
+
+.pila-avatares {
+  display: inline-flex;
+}
+
+.pila-avatares app-avatar:not(:first-child) {
+  margin-left: -8px;
+}
+
+.nombres a {
+  font-weight: 700;
+  color: var(--marca-tinta);
+}
+
+.nombres a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 960px) {
+  .columnas {
+    grid-template-columns: 1fr;
+  }
+
+  .lateral {
+    position: static;
+  }
+
+  .buscador {
+    width: 100%;
+  }
+
+  .lista-personas {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .pagina {
+    padding-top: 16px;
+  }
+
+  .titulo-pagina {
+    flex-direction: column;
+  }
+
+  h1 {
+    font-size: 26px;
+  }
+}
+
+.encabezado .pestanas,
+.encabezado .segmentos {
+  min-width: 0;
+  flex: 0 1 auto;
+}

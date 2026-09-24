@@ -1,0 +1,52 @@
+<div class="buscador">
+  <div class="campo-con-icono">
+    <app-icono nombre="buscar" [tamano]="16" />
+    <input
+      [id]="id()"
+      [name]="id()"
+      type="text"
+      class="campo"
+      [class.invalido]="error()"
+      [placeholder]="placeholder()"
+      autocomplete="off"
+      [(ngModel)]="textoBusqueda"
+      (input)="buscar()"
+    />
+  </div>
+
+  @if (buscando()) {
+    <div class="resultados"><p class="estado">Buscando en OpenStreetMap…</p></div>
+  } @else if (resultados(); as lista) {
+    <div class="resultados">
+      @for (u of lista; track u.nombre + u.latitud) {
+        <button type="button" class="resultado" (click)="seleccionar(u)">
+          <app-icono nombre="ubicacion" [tamano]="15" />
+          <span>
+            {{ u.nombre }}
+            <small>{{ u.tipo }}</small>
+          </span>
+        </button>
+      } @empty {
+        <p class="estado" [class.error]="errorBusqueda()">
+          {{ errorBusqueda() ? 'No se pudo buscar. Inténtalo de nuevo en unos segundos.' : 'Sin resultados en España. Prueba con otro nombre o añade la calle.' }}
+        </p>
+      }
+    </div>
+  }
+</div>
+@if (error(); as mensaje) {
+  <span class="error-campo">{{ mensaje }}</span>
+}
+
+<div class="mapa-previa" [class.sin-ubicacion]="!ubicacion()">
+  <div #mapa class="mapa" [style.height.px]="alturaMapa()"></div>
+  @if (ubicacion(); as u) {
+    <div class="seleccionada">
+      <app-icono nombre="check" [tamano]="16" />
+      <span>{{ u.nombre }}</span>
+      <button type="button" class="btn btn-fantasma btn-pequeno" (click)="quitar()">Cambiar</button>
+    </div>
+  } @else {
+    <p class="pista">La ubicación aparecerá aquí cuando la selecciones.</p>
+  }
+</div>

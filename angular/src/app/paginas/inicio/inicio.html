@@ -1,0 +1,156 @@
+<app-cabecera>
+  <div class="campo-con-icono buscador">
+    <app-icono nombre="buscar" />
+    <input
+      type="search"
+      class="campo"
+      placeholder="Buscar por título, lugar o ciudad"
+      [value]="busqueda()"
+      (input)="busqueda.set($any($event.target).value)"
+    />
+  </div>
+</app-cabecera>
+
+<main class="contenedor principal">
+  <section class="comunidad">
+    <div class="encabezado">
+      <div>
+        <h1>Actividades de la comunidad</h1>
+        <p class="sub">
+          @if (cargando()) {
+            Cargando…
+          } @else {
+            {{ comunidad().length }} {{ comunidad().length === 1 ? 'actividad próxima' : 'actividades próximas' }}
+          }
+        </p>
+      </div>
+    </div>
+
+    <div class="filtros">
+      <div class="tipos" role="group" aria-label="Tipo de actividad">
+        <button type="button" class="filtro-tipo" [class.activo]="tipo() === null" (click)="tipo.set(null)">Todas</button>
+        @for (t of tipos; track t) {
+          <button type="button" class="filtro-tipo {{ t }}" [class.activo]="tipo() === t" (click)="tipo.set(t)">
+            {{ t === 'DEPORTIVA' ? 'Deportivas' : t === 'CULTURAL' ? 'Culturales' : 'Talleres' }}
+          </button>
+        }
+      </div>
+
+      @if (origenDistancia(); as origen) {
+        <select class="campo distancia" [title]="'Distancia desde ' + origen" (change)="seleccionarDistancia($any($event.target).value)">
+          @for (opcion of opcionesDistancia; track opcion.texto) {
+            <option [value]="opcion.km ?? ''" [selected]="opcion.km === distanciaMaxima()">{{ opcion.texto }}</option>
+          }
+        </select>
+      }
+    </div>
+
+    <div class="lista">
+      @if (cargando()) {
+        <div class="esqueleto"></div>
+        <div class="esqueleto"></div>
+        <div class="esqueleto"></div>
+      } @else if (errorCarga(); as mensaje) {
+        <div class="vacio panel" role="alert">
+          <app-icono nombre="alerta" [tamano]="36" />
+          <strong>No hemos podido cargar las actividades</strong>
+          <p>{{ mensaje }}</p>
+          <button type="button" class="btn btn-primario btn-pequeno" (click)="cargar()">Reintentar</button>
+        </div>
+      } @else {
+        @for (actividad of comunidad(); track actividad.id) {
+          <app-tarjeta-actividad
+            [actividad]="actividad"
+            (abrir)="abrir($event)"
+            (inscribir)="alternarInscripcion($event)"
+            (editar)="editar($event)"
+            (eliminar)="eliminar($event)"
+          />
+        } @empty {
+          <div class="vacio panel">
+            <app-icono nombre="brujula" [tamano]="36" />
+            <strong>{{ hayFiltros() ? 'Nada por aquí con esos filtros' : 'Todavía no hay actividades' }}</strong>
+            <p>{{ hayFiltros() ? 'Prueba con otra búsqueda o amplía la distancia.' : 'Sé la primera persona en organizar una.' }}</p>
+            @if (hayFiltros()) {
+              <button type="button" class="btn btn-secundario btn-pequeno" (click)="limpiarFiltros()">Quitar filtros</button>
+            }
+          </div>
+        }
+      }
+    </div>
+  </section>
+
+  <aside class="lateral">
+    <div class="encabezado">
+      <h2>{{ sesion.esAdmin() ? 'Actividades denunciadas' : 'Mis actividades' }}</h2>
+      @if (sesion.haySesion() && !cargando()) {
+        <span class="contador">{{ lateral().length }}</span>
+      }
+    </div>
+
+    @if (!sesion.haySesion()) {
+      <div class="vacio panel">
+        <app-icono nombre="usuario" [tamano]="32" />
+        <strong>Tu espacio</strong>
+        <p>Inicia sesión para organizar actividades y ver las que has creado.</p>
+        <a routerLink="/login" class="btn btn-secundario btn-pequeno">Iniciar sesión</a>
+      </div>
+    } @else if (cargando()) {
+      <div class="esqueleto"></div>
+    } @else {
+      <div class="lista">
+        @for (actividad of lateral(); track actividad.id) {
+          <app-tarjeta-actividad
+            [actividad]="actividad"
+            (abrir)="abrir($event)"
+            (editar)="editar($event)"
+            (eliminar)="eliminar($event)"
+          />
+        } @empty {
+          <div class="vacio panel">
+            @if (sesion.esAdmin()) {
+              <app-icono nombre="escudo" [tamano]="32" />
+              <strong>Todo en orden</strong>
+              <p>No hay actividades denunciadas.</p>
+            } @else {
+              <app-icono nombre="calendario" [tamano]="32" />
+              <strong>Aún no has creado ninguna</strong>
+              <p>Organiza un plan y la comunidad podrá apuntarse.</p>
+              <a routerLink="/actividades/nueva" class="btn btn-primario btn-pequeno">Crear actividad</a>
+            }
+          </div>
+        }
+      </div>
+    }
+  </aside>
+</main>
+
+<footer class="contenedor pie">
+  <span>© 2026 PlanifyPlus</span>
+  <button type="button" class="enlace-pie" (click)="mostrarLegal.set(true)">Aviso legal</button>
+</footer>
+
+@if (mostrarLegal()) {
+  <div class="fondo-legal" (click)="mostrarLegal.set(false)">
+    <div class="legal" role="dialog" aria-label="Aviso legal" (click)="$event.stopPropagation()">
+      <div class="legal-cabecera">
+        <h2>Aviso legal</h2>
+        <button type="button" class="btn btn-fantasma btn-icono" (click)="mostrarLegal.set(false)" aria-label="Cerrar">
+          <app-icono nombre="cerrar" />
+        </button>
+      </div>
+      <div class="legal-textos">
+        <p>PlanifyPlus es una plataforma para organizar actividades comunitarias.</p>
+        <p><strong>Condiciones de uso</strong></p>
+        <ul>
+          <li>Solo mayores de 18 años.</li>
+          <li>Respeta las normas de convivencia.</li>
+          <li>Las actividades son responsabilidad del organizador.</li>
+          <li>Prohibido contenido ilegal o spam.</li>
+        </ul>
+        <p><strong>Datos personales.</strong> Cumplimos el RGPD. Consulta la Política de Privacidad.</p>
+        <p class="legal-version">Versión 1.0 · © 2026 PlanifyPlus. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </div>
+}

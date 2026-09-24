@@ -1,0 +1,91 @@
+@if (foto(); as f) {
+  <div class="elegida" [class.avatar]="modo() === 'privado'">
+    <img [src]="f.url" [alt]="f.titulo ?? 'Foto elegida'" />
+    <div class="datos">
+      <strong>{{ f.titulo || 'Foto elegida' }}</strong>
+      <span>{{ modo() === 'privado' ? 'Se muestra en tu perfil y junto a los planes a los que vas' : (f.autor ? f.autor + ' · ' : '') + licencia(f) }}</span>
+      <div class="botones">
+        <button type="button" class="btn btn-secundario btn-pequeno" (click)="quitar()">Cambiar</button>
+        @if (modo() === 'privado') {
+          <button type="button" class="btn btn-fantasma btn-pequeno" (click)="foto.set(null)">Quitar</button>
+        }
+      </div>
+    </div>
+  </div>
+} @else if (!abierto()) {
+  <button type="button" class="abrir panel-hundido" [class.invalido]="error()" (click)="abrir()">
+    <app-icono nombre="imagen" [tamano]="22" />
+    <span>
+      <strong>{{ modo() === 'banco' ? 'Elegir una foto de portada' : 'Subir una foto de perfil' }}</strong>
+      <small>{{ modo() === 'banco' ? 'Del banco de fotos de la comunidad o una tuya' : 'JPG, PNG o WebP de hasta 6 MB' }}</small>
+    </span>
+  </button>
+} @else {
+  <div class="banco panel-hundido">
+    @if (modo() === 'banco') {
+      <div class="campo-con-icono">
+        <app-icono nombre="buscar" [tamano]="16" />
+        <input
+          type="text"
+          class="campo"
+          placeholder="Busca por tema: pádel, yoga, cerámica…"
+          autocomplete="off"
+          [(ngModel)]="textoBusqueda"
+          name="busqueda-foto"
+          (input)="buscar()"
+        />
+      </div>
+
+      <div class="rejilla">
+        @if (buscando()) {
+          <p class="estado">Buscando en el banco de fotos…</p>
+        } @else {
+          @for (f of resultados() ?? []; track f.id) {
+            <button type="button" class="miniatura" [title]="(f.titulo || '') + ' · ' + licencia(f)" (click)="elegir(f)">
+              <img [src]="f.url" [alt]="f.titulo ?? ''" loading="lazy" />
+              <span class="pie">{{ f.etiquetas[0] || f.titulo }}</span>
+            </button>
+          } @empty {
+            <p class="estado">
+              {{ textoBusqueda ? 'No hay fotos de "' + textoBusqueda + '" todavía. ¡Sube la primera y quedará para toda la comunidad!' : 'Escribe un tema para buscar.' }}
+            </p>
+          }
+        }
+      </div>
+    }
+
+    <div class="subida">
+      <div class="titulo-subida">
+        <app-icono nombre="subir" [tamano]="15" />
+        <strong>{{ modo() === 'banco' ? 'O sube una foto tuya' : 'Elige una imagen' }}</strong>
+      </div>
+      <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" (change)="seleccionarArchivo($event)" [disabled]="subiendo()" />
+      @if (modo() === 'banco') {
+        <input
+          type="text"
+          class="campo"
+          placeholder="Etiquetas separadas por comas: pádel, pista cubierta"
+          [(ngModel)]="etiquetas"
+          name="etiquetas-foto"
+          maxlength="255"
+        />
+        <p class="ayuda">Tu foto pasará al banco con esas etiquetas para que otras personas puedan usarla en sus planes.</p>
+        <button type="button" class="btn btn-primario btn-pequeno" [disabled]="subiendo()" (click)="subir()">
+          {{ subiendo() ? 'Subiendo…' : 'Subir al banco' }}
+        </button>
+      } @else if (subiendo()) {
+        <p class="ayuda">Subiendo…</p>
+      }
+      @if (errorSubida(); as mensaje) {
+        <span class="error-campo">{{ mensaje }}</span>
+      }
+    </div>
+
+    @if (modo() === 'banco') {
+      <button type="button" class="btn btn-fantasma btn-pequeno cerrar" (click)="abierto.set(false)">Cerrar sin elegir</button>
+    }
+  </div>
+}
+@if (error(); as mensaje) {
+  <span class="error-campo">{{ mensaje }}</span>
+}

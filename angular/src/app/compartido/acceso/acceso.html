@@ -1,0 +1,23 @@
+<div class="acceso">
+  <aside class="lateral">
+    <a routerLink="/" class="marca">Planify<span>+</span></a>
+    <div class="mensaje">
+      <h2>Lo que pasa en tu barrio, en un solo sitio.</h2>
+      <p>Partidos, talleres, rutas, cinefórums. Los organiza gente de tu ciudad y puedes apuntarte en un momento, o proponer el tuyo.</p>
+    </div>
+    <ul class="puntos">
+      <li><app-icono nombre="ubicacion" [tamano]="16" /> Filtra por distancia desde tu casa</li>
+      <li><app-icono nombre="calendario" [tamano]="16" /> Un calendario con lo que tienes apuntado</li>
+      <li><app-icono nombre="mensaje" [tamano]="16" /> Chat con el resto de participantes</li>
+    </ul>
+  </aside>
+
+  <main class="contenido">
+    <a routerLink="/" class="volver"><app-icono nombre="atras" [tamano]="16" /> Volver al inicio</a>
+    <div class="formulario">
+      <h1>{{ titulo() }}</h1>
+      <p class="subtitulo">{{ subtitulo() }}</p>
+      <ng-content />
+    </div>
+  </main>
+</div>

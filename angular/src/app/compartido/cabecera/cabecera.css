@@ -1,0 +1,145 @@
+.cabecera {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(242, 239, 232, 0.9);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--borde);
+}
+
+.interior {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  height: 68px;
+}
+
+.marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--tinta);
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--tinta);
+  color: var(--fondo);
+}
+
+.texto-marca {
+  font-family: var(--fuente-titulos);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.texto-marca span {
+  color: var(--marca);
+}
+
+.hueco {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+}
+
+.acciones {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.usuario {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 10px 4px 4px;
+  border-radius: 999px;
+}
+
+.usuario.enlace:hover {
+  box-shadow: var(--hundido);
+}
+
+.datos {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.nombre {
+  font-size: 13px;
+  font-weight: 700;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ciudad {
+  font-size: 11px;
+  color: var(--tinta-3);
+}
+
+.insignia-admin {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--peligro-suave);
+  color: #b42318;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+@media (max-width: 720px) {
+  .interior {
+    flex-wrap: wrap;
+    height: auto;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .hueco {
+    order: 3;
+    flex: 1 1 100%;
+  }
+
+  .hueco:empty {
+    display: none;
+  }
+
+  .crear span,
+  .datos {
+    display: none;
+  }
+
+  .crear {
+    width: 40px;
+    padding: 0;
+  }
+
+  .usuario {
+    padding: 0;
+  }
+}
+
+@media (min-width: 721px) and (max-width: 960px) {
+  .datos {
+    display: none;
+  }
+
+  .usuario {
+    padding: 4px;
+  }
+}

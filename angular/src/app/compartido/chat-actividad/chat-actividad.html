@@ -1,0 +1,61 @@
+<section class="chat panel">
+  <header class="cabecera-chat">
+    <span class="titulo"><app-icono nombre="mensaje" [tamano]="18" /> Chat del plan</span>
+    <span class="nota">{{ puedoEscribir() ? 'Solo lo ven las personas apuntadas' : 'Modo lectura (moderación)' }}</span>
+  </header>
+
+  <div #lista class="mensajes panel-hundido">
+    @if (cargando()) {
+      <p class="vacio">Cargando conversación…</p>
+    } @else {
+      @for (m of mensajes(); track m.id; let i = $index) {
+        @if (cambiaDeDia(i)) {
+          <div class="separador"><span>{{ m.enviado_en | date: "EEEE d 'de' MMMM" }}</span></div>
+        }
+        <div class="mensaje" [class.propio]="m.propio" [class.continua]="continuaAnterior(i)">
+          @if (!continuaAnterior(i)) {
+            <a class="autor" [routerLink]="['/usuarios', m.usuario.id]" title="Ver perfil">
+              <app-avatar [nombre]="m.usuario.nombre" [url]="m.usuario.avatar_url" [tamano]="28" />
+              <span>{{ m.propio ? 'Tú' : m.usuario.nombre }}</span>
+              <time [attr.datetime]="m.enviado_en">{{ m.enviado_en | date: 'HH:mm' }}</time>
+            </a>
+          }
+          <div class="burbuja-fila">
+            <p class="burbuja" [title]="m.enviado_en | date: 'd MMM, HH:mm'">{{ m.texto }}</p>
+            @if (puedeBorrar(m)) {
+              <button type="button" class="borrar" (click)="eliminar(m)" title="Eliminar mensaje" aria-label="Eliminar mensaje">
+                <app-icono nombre="papelera" [tamano]="13" />
+              </button>
+            }
+          </div>
+        </div>
+      } @empty {
+        <p class="vacio">
+          <app-icono nombre="mensaje" [tamano]="28" />
+          Todavía no hay mensajes. {{ puedoEscribir() ? '¡Rompe el hielo!' : '' }}
+        </p>
+      }
+    }
+  </div>
+
+  @if (puedoEscribir()) {
+    <form class="redactor" (submit)="$event.preventDefault(); enviar()">
+      <textarea
+        class="campo"
+        rows="1"
+        placeholder="Escribe un mensaje al grupo…"
+        [attr.maxlength]="maximo"
+        [value]="texto()"
+        (input)="texto.set($any($event.target).value)"
+        (keydown)="alPulsar($event)"
+        [disabled]="enviando()"
+      ></textarea>
+      <button type="submit" class="btn btn-primario btn-icono" [disabled]="!puedeEnviar()" title="Enviar" aria-label="Enviar">
+        <app-icono nombre="enviar" [tamano]="18" />
+      </button>
+      @if (caracteresRestantes() < 100) {
+        <small class="restantes" [class.limite]="caracteresRestantes() === 0">{{ caracteresRestantes() }}</small>
+      }
+    </form>
+  }
+</section>

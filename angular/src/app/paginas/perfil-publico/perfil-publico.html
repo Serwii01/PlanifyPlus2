@@ -1,0 +1,108 @@
+<app-cabecera />
+
+<main class="contenedor pagina">
+  <a routerLink="/" class="volver"><app-icono nombre="atras" [tamano]="16" /> Todas las actividades</a>
+
+  @if (perfil(); as p) {
+    <section class="panel resumen">
+      <app-avatar [nombre]="p.nombre" [url]="p.avatar_url" [tamano]="96" />
+      <div class="identidad">
+        <h1>{{ p.nombre }}</h1>
+        <div class="datos">
+          @if (p.ciudad) {
+            <span class="chip chip-neutra"><app-icono nombre="ubicacion" [tamano]="12" /> {{ p.ciudad }}</span>
+          }
+          @if (p.miembro_desde) {
+            <span class="chip chip-neutra"><app-icono nombre="calendario" [tamano]="12" /> Desde {{ p.miembro_desde | date: 'MMM y' }}</span>
+          }
+          @if (p.me_sigue && !esMiPerfil()) {
+            <span class="chip chip-neutra te-sigue">Te sigue</span>
+          }
+        </div>
+        <p class="bio">{{ p.bio || 'Esta persona todavía no ha escrito su presentación.' }}</p>
+        <div class="acciones">
+          @if (esMiPerfil()) {
+            <a routerLink="/perfil/editar" class="btn btn-secundario btn-pequeno"><app-icono nombre="ajustes" [tamano]="14" /> Editar mi perfil</a>
+          } @else {
+            <app-boton-seguir [usuarioId]="p.id" [loSigo]="p.lo_sigo" (cambio)="actualizarSeguimiento($event)" />
+          }
+        </div>
+      </div>
+      <div class="cifras">
+        <div class="cifra"><span class="etiqueta">Organiza</span><strong>{{ p.organizadas }}</strong></div>
+        <div class="cifra"><span class="etiqueta">Próximos</span><strong>{{ p.proximas.length }}</strong></div>
+        <div class="cifra"><span class="etiqueta">Realizados</span><strong>{{ p.realizadas }}</strong></div>
+        <button type="button" class="cifra cifra-boton" [class.activa]="listaRed() === 'seguidores'" (click)="alternarRed('seguidores')" title="Ver seguidores">
+          <span class="etiqueta">Seguidores</span><strong>{{ p.seguidores }}</strong>
+        </button>
+        <button type="button" class="cifra cifra-boton" [class.activa]="listaRed() === 'seguidos'" (click)="alternarRed('seguidos')" title="Ver a quién sigue">
+          <span class="etiqueta">Siguiendo</span><strong>{{ p.seguidos }}</strong>
+        </button>
+      </div>
+    </section>
+
+    @if (listaRed(); as lista) {
+      <section class="bloque">
+        <div class="encabezado">
+          <h2>{{ lista === 'seguidores' ? 'Seguidores' : 'Personas a las que sigue' }}</h2>
+          <button type="button" class="btn btn-fantasma btn-pequeno" (click)="listaRed.set(null)"><app-icono nombre="cerrar" [tamano]="14" /> Cerrar</button>
+        </div>
+        <div class="lista personas">
+          @if (cargandoRed()) {
+            <div class="esqueleto"></div>
+          } @else {
+            @for (persona of personas(); track persona.id) {
+              <app-tarjeta-persona [persona]="persona" (cambio)="actualizarPersona($event)" />
+            } @empty {
+              <p class="vacio-corto">{{ lista === 'seguidores' ? 'Todavía no tiene seguidores.' : 'Todavía no sigue a nadie.' }}</p>
+            }
+          }
+        </div>
+      </section>
+    }
+
+    <section class="bloque">
+      <h2>Planes que organiza</h2>
+      <div class="lista">
+        @for (actividad of organiza(); track actividad.id) {
+          <app-tarjeta-actividad [actividad]="actividad" [soloInscripcion]="true" (abrir)="abrir($event)" (inscribir)="alternarInscripcion($event)" />
+        } @empty {
+          <p class="vacio-corto">Ahora mismo no organiza ningún plan.</p>
+        }
+      </div>
+    </section>
+
+    <section class="bloque">
+      <h2>Planes a los que va</h2>
+      <div class="lista">
+        @for (actividad of asiste(); track actividad.id) {
+          <app-tarjeta-actividad [actividad]="actividad" [soloInscripcion]="true" (abrir)="abrir($event)" (inscribir)="alternarInscripcion($event)" />
+        } @empty {
+          <p class="vacio-corto">No está apuntado a ningún plan próximo.</p>
+        }
+      </div>
+    </section>
+
+    <section class="bloque">
+      <div class="encabezado">
+        <h2><app-icono nombre="historial" [tamano]="14" /> Historial · {{ p.historial.length }}</h2>
+        @if (p.historial.length) {
+          <div class="segmentos" role="tablist">
+            <button type="button" role="tab" [class.activo]="filtroHistorial() === 'todas'" (click)="filtroHistorial.set('todas')">Todo</button>
+            <button type="button" role="tab" [class.activo]="filtroHistorial() === 'organizadas'" (click)="filtroHistorial.set('organizadas')">Organizó ({{ historialOrganizadas() }})</button>
+            <button type="button" role="tab" [class.activo]="filtroHistorial() === 'asistidas'" (click)="filtroHistorial.set('asistidas')">Asistió ({{ p.historial.length - historialOrganizadas() }})</button>
+          </div>
+        }
+      </div>
+      <div class="lista">
+        @for (actividad of historial(); track actividad.id) {
+          <app-tarjeta-actividad [actividad]="actividad" [soloInscripcion]="true" (abrir)="abrir($event)" />
+        } @empty {
+          <p class="vacio-corto">{{ p.historial.length ? 'Nada en este apartado.' : 'Todavía no ha participado en ningún plan.' }}</p>
+        }
+      </div>
+    </section>
+  } @else if (cargando()) {
+    <div class="esqueleto"></div>
+  }
+</main>

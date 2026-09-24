@@ -1,0 +1,203 @@
+<app-cabecera />
+
+<main class="contenedor pagina">
+  <a routerLink="/" class="volver"><app-icono nombre="atras" [tamano]="16" /> Todas las actividades</a>
+
+  @if (actividad(); as a) {
+    @let prox = proximidad()!;
+    <header class="cabecera-plan">
+      <div class="meta">
+        <span class="tipo {{ a.tipo }}">{{ a.tipo | titlecase }}</span>
+        <span class="estado {{ prox.clase }}">{{ prox.finalizada ? 'Ya celebrada' : prox.texto }}</span>
+        @if (completa() && !prox.finalizada) {
+          <span class="estado completa">Completa</span>
+        }
+      </div>
+      <h1>{{ a.titulo }}</h1>
+      <p class="resumen-fecha">
+        <span class="fecha-larga">{{ a.fecha_hora_inicio | date: "EEEE, d 'de' MMMM" }}</span> · {{ a.fecha_hora_inicio | date: 'HH:mm' }} h · {{ a.ciudad }}
+      </p>
+    </header>
+  }
+
+  <div class="columnas">
+    <article class="principal">
+      @if (actividad(); as a) {
+        @let prox = proximidad()!;
+        @if (a.foto; as foto) {
+          <figure class="portada">
+            <img [src]="foto.url" [alt]="foto.titulo ?? a.titulo" />
+            @if (foto.autor && foto.licencia !== 'propia') {
+              <a class="credito" [href]="foto.fuente_url" target="_blank" rel="noopener">Foto: {{ foto.autor }} · {{ foto.licencia === 'cc0' ? 'CC0' : 'CC ' + foto.licencia.toUpperCase() }}</a>
+            } @else if (foto.autor) {
+              <figcaption class="credito">Foto de {{ foto.autor }}</figcaption>
+            }
+          </figure>
+        }
+
+        @if (a.creador_id !== null) {
+          <a class="organizador enlace-perfil" [routerLink]="['/usuarios', a.creador_id]" title="Ver perfil">
+            <app-avatar [nombre]="a.creador ?? ''" [url]="a.creador_avatar_url" [tamano]="44" />
+            <div>
+              <span class="quien">{{ a.creador }}</span>
+              <span class="donde">Organiza este plan</span>
+            </div>
+            <app-icono nombre="derecha" [tamano]="16" />
+          </a>
+        } @else {
+          <div class="organizador">
+            <app-avatar nombre="" [tamano]="44" />
+            <div>
+              <span class="quien">Plan de la comunidad PlanifyPlus</span>
+              <span class="donde">Propuesto por la plataforma</span>
+            </div>
+          </div>
+        }
+
+        <section class="seccion">
+          <h2 class="titulo-seccion">Sobre la actividad</h2>
+          <p class="descripcion">{{ a.descripcion }}</p>
+        </section>
+
+        <section class="seccion">
+          <h2 class="titulo-seccion">Cuándo y dónde</h2>
+          <ul class="detalles">
+            <li>
+              <app-icono nombre="calendario" />
+              <div>
+                <strong class="fecha-larga">{{ a.fecha_hora_inicio | date: "EEEE, d 'de' MMMM 'de' y" }}</strong>
+                <span>{{ prox.finalizada ? 'Esta actividad ya se ha celebrado' : prox.texto }}</span>
+              </div>
+            </li>
+            <li>
+              <app-icono nombre="reloj" />
+              <div>
+                <strong>{{ a.fecha_hora_inicio | date: 'HH:mm' }} h</strong>
+                <span>Hora de inicio</span>
+              </div>
+            </li>
+            <li>
+              <app-icono nombre="ubicacion" />
+              <div>
+                <strong>{{ a.ubicacion || 'Sin ubicación' }}</strong>
+                <span>{{ a.ciudad || 'Sin ciudad' }}</span>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        <section class="seccion">
+          <h2 class="titulo-seccion">Quién va</h2>
+          <p class="intro-asistentes">
+            @if (a.inscritos === 0) {
+              Todavía no hay nadie apuntado.
+            } @else {
+              {{ a.inscritos }} {{ a.inscritos === 1 ? 'persona apuntada' : 'personas apuntadas' }} · aforo de {{ a.aforo }}
+            }
+          </p>
+          <ul class="asistentes">
+            @for (p of a.asistentes; track p.id) {
+              <li>
+                <a class="asistente" [routerLink]="['/usuarios', p.id]" title="Ver perfil">
+                  <app-avatar [nombre]="p.nombre" [url]="p.avatar_url" [tamano]="40" />
+                  <span class="nombre-asistente">
+                    <strong>{{ p.nombre }}</strong>
+                    <small>{{ p.id === a.creador_id ? 'Organiza' : p.id === sesion.usuario()?.id ? 'Tú' : 'Apuntado' }}</small>
+                  </span>
+                </a>
+              </li>
+            }
+            @if (asistentesOcultos() > 0) {
+              <li class="mas-asistentes">+{{ asistentesOcultos() }} más</li>
+            }
+            @if (!prox.finalizada) {
+              @for (hueco of plazasLibres(); track $index) {
+                <li class="plaza-libre">
+                  <span class="hueco"><app-icono nombre="mas" [tamano]="16" /></span>
+                  <span class="nombre-asistente">
+                    <strong>Plaza libre</strong>
+                    <small>Puede ser tuya</small>
+                  </span>
+                </li>
+              }
+            }
+          </ul>
+        </section>
+
+        @if (veChat()) {
+          <section class="seccion">
+            <h2 class="titulo-seccion">Conversación</h2>
+            <app-chat-actividad [actividadId]="a.id" [puedoEscribir]="!sesion.esAdmin()" />
+          </section>
+        } @else if (a.inscritos > 0 && !prox.finalizada && !sesion.esAdmin()) {
+          <section class="seccion">
+            <h2 class="titulo-seccion">Conversación</h2>
+            <p class="chat-cerrado panel-hundido">
+              <app-icono nombre="candado" [tamano]="16" />
+              Las personas apuntadas tienen un chat para organizarse. {{ sesion.haySesion() ? 'Apúntate para entrar.' : 'Inicia sesión y apúntate para entrar.' }}
+            </p>
+          </section>
+        }
+      } @else {
+        <div class="esqueleto"></div>
+      }
+    </article>
+
+    <aside class="lateral">
+      @if (actividad(); as a) {
+        @let prox = proximidad()!;
+        <div class="panel acciones">
+          <div class="plazas">
+            <div class="cifras">
+              <strong>{{ a.inscritos }}</strong> de {{ a.aforo }} plazas ocupadas
+            </div>
+            <div class="barra" [class.llena]="completa()"><span [style.width.%]="ocupacion()"></span></div>
+          </div>
+
+          @if (esCreador()) {
+            <a [routerLink]="['/actividades', a.id, 'editar']" class="btn btn-secundario btn-grande btn-bloque">
+              <app-icono nombre="editar" [tamano]="16" /> Editar actividad
+            </a>
+            <button type="button" class="btn btn-peligro btn-bloque" [disabled]="trabajando()" (click)="eliminar()">
+              <app-icono nombre="papelera" [tamano]="16" /> Eliminar
+            </button>
+          } @else if (sesion.esAdmin()) {
+            <button type="button" class="btn btn-peligro btn-grande btn-bloque" [disabled]="trabajando()" (click)="eliminar()">
+              <app-icono nombre="papelera" [tamano]="16" /> Eliminar actividad
+            </button>
+            @if (a.denuncias > 0) {
+              <p class="nota-admin"><app-icono nombre="bandera" [tamano]="14" /> {{ a.denuncias }} {{ a.denuncias === 1 ? 'denuncia recibida' : 'denuncias recibidas' }}</p>
+            }
+          } @else if (prox.finalizada) {
+            <p class="nota">Esta actividad ya se ha celebrado.</p>
+          } @else if (!sesion.haySesion()) {
+            <a routerLink="/login" class="btn btn-primario btn-grande btn-bloque">Inicia sesión para apuntarte</a>
+            <p class="nota">¿Sin cuenta? <a routerLink="/registro" class="enlace">Créala en un minuto</a>.</p>
+          } @else if (a.inscrito) {
+            <div class="apuntado"><app-icono nombre="check" [tamano]="16" /> Tienes plaza reservada</div>
+            <button type="button" class="btn btn-secundario btn-bloque" [disabled]="trabajando()" (click)="alternarInscripcion()">Cancelar inscripción</button>
+          } @else {
+            <button type="button" class="btn btn-primario btn-grande btn-bloque" [disabled]="trabajando() || completa()" (click)="alternarInscripcion()">
+              {{ completa() ? 'No quedan plazas' : 'Apuntarme' }}
+            </button>
+          }
+
+          @if (sesion.haySesion() && !sesion.esAdmin() && !esCreador()) {
+            <button type="button" class="denunciar" [disabled]="a.denunciada || trabajando()" (click)="denunciar()">
+              <app-icono nombre="bandera" [tamano]="13" /> {{ a.denunciada ? 'Ya has denunciado esta actividad' : 'Denunciar actividad' }}
+            </button>
+          }
+        </div>
+      }
+
+      <div class="panel tarjeta-mapa">
+        <div #mapa class="mapa"></div>
+        @if (enlaceMapa(); as enlace) {
+          <a [href]="enlace" target="_blank" rel="noopener" class="abrir-mapa">
+            <app-icono nombre="externo" [tamano]="14" /> Abrir en OpenStreetMap
+          </a>
+        }
+      </div>
+    </aside>
+  </div>
+</main>
